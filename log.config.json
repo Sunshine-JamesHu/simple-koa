@@ -1,0 +1,46 @@
+{
+    "appenders": {
+        "out": {
+            "type": "console"
+        },
+        "allLog": {
+            "type": "file",
+            "filename": "./logs/all/all.log",
+            "keepFileExt": true,
+            "maxLogSize": 10485760,
+            "backups": 3
+        },
+        "requestLog": {
+            "type": "dateFile",
+            "filename": "./logs/request/request.log",
+            "pattern": ".yyyy-MM-dd",
+            "keepFileExt": true
+        },
+        "errorLog": {
+            "type": "file",
+            "filename": "./logs/error/error.log"
+        },
+        "error": {
+            "type": "logLevelFilter",
+            "level": "error",
+            "appender": "errorLog"
+        }
+    },
+    "categories": {
+        "request": {
+            "appenders": [
+                "out",
+                "requestLog"
+            ],
+            "level": "debug"
+        },
+        "default": {
+            "appenders": [
+                "out",
+                "allLog",
+                "error"
+            ],
+            "level": "debug"
+        }
+    }
+}
