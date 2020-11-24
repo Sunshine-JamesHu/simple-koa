@@ -103,4 +103,11 @@ export default class SettingManager {
   public GetHttpClientTimeout(): number {
     return this.GetConfig('httpTimeout');
   }
+
+  /**
+   * 获取需要代理的头
+   */
+  public GetNeedProxyHeaders(): string[] | undefined {
+    return this.GetConfig('needProxyHeaders');
+  }
 }

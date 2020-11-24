@@ -1,19 +1,18 @@
 import { IHttpClient, RequestConfig, Response, HttpMethod } from '../HttpClient';
 import axios, { AxiosResponse, AxiosRequestConfig, Method } from 'axios';
+import { Inject } from '../../../core/di/Injector';
+import SettingManager from '../../../core/setting/SettingManager';
 
 const arrayBufferReg = /protobuf|msgpack/i;
 
+const needProxyHeaders: string[] = ['Authorization', 'Accept-Language', 'Cookie'];
+
 export default class HttpClient implements IHttpClient {
   public defaultHeaders: { [key: string]: string } = {};
-  private needProxyHeaders: string[] = [
-    'Authorization',
-    'authorization', // 验证
-    'Accept-Language',
-    'accept-language', // 语言
-    'Cookie',
-    'cookie',
-    // "Accept-Encoding", "accept-encoding",
-  ];
+
+  @Inject()
+  private readonly _settingManager: SettingManager;
+
 
   public Get<TOutput>(url: string, config?: RequestConfig): Promise<TOutput> {
     const resTask = axios.get<Response<TOutput>>(url, this.GetAxiosConfig(config));
@@ -60,14 +59,29 @@ export default class HttpClient implements IHttpClient {
     );
   }
 
+  private GetNeedProxyHeaders() {
+    let headers = this._settingManager.GetNeedProxyHeaders();
+    if (!headers || !Array.isArray(headers)) headers = needProxyHeaders;
+
+    const fullHeaders: string[] = [];
+    headers.forEach((element) => {
+      fullHeaders.push(element);
+      fullHeaders.push(element.toLowerCase());
+      fullHeaders.push(element.toUpperCase());
+    });
+
+    return fullHeaders;
+  }
+
   private GetAxiosConfig(config?: RequestConfig): AxiosRequestConfig {
     const headers: { [key: string]: string } = {};
 
     // 从ctx中继承header
     const ctxHeaders = this.defaultHeaders;
+    const proxyHeaders = this.GetNeedProxyHeaders();
     for (const key in ctxHeaders) {
       if (ctxHeaders.hasOwnProperty(key)) {
-        if (this.needProxyHeaders.indexOf(key) > -1) {
+        if (proxyHeaders.indexOf(key) > -1) {
           headers[key] = ctxHeaders[key];
         }
       }
