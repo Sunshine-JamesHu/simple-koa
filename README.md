@@ -1,4 +1,4 @@
-### Athene Api
+### Simple-Koa
 
 ##### 本框架基于 Koa 搭建,使用约定高于配置的编码方式
 
