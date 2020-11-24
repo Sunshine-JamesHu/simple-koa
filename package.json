@@ -1,7 +1,7 @@
 {
-  "name": "easy-koa",
+  "name": "simple-koa",
   "version": "1.0.0",
-  "description": "easy-koa",
+  "description": "simple-koa",
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon --inspect --watch \"src/**/*\" -e ts --exec \"node\" -r ts-node/register \"./src/App.ts\"",

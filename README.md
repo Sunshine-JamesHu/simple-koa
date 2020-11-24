@@ -6,12 +6,12 @@
 
 #### 安装框架
 
-`npm i easy-koa --save`
+`npm i simple-koa --save`
 
 #### 框架启动
 
     import * as path from 'path';
-    import { Startup } from "easy-koa";
+    import { Startup } from "simple-koa";
 
     const controllerPath = './controller';
     const app = new Startup(path.join(__dirname, controllerPath));
@@ -22,7 +22,7 @@
 ##### 定义一个 get 请求 127.0.0.1:8000/hello 返回 HelloWorldController
 
     ```
-    import { Router, HttpRequest, Controller } from "easy-koa";
+    import { Router, HttpRequest, Controller } from "simple-koa";
     @Router('/hello') // 定义该Controller的父路由为/hello
     @Injectable("Transient") // 标记这是一个瞬时注入的类
     export default class HelloWorldController extends Controller { //继承Controller
