@@ -12,7 +12,9 @@ export default abstract class Service {
     }
     protected set Context(ctx: Context) {
         this._context = ctx;
-        (this.HttpClient as HttpClient).SetDefaultHeaders(ctx.headers);
+        
+        // @ts-ignore
+        this.HttpClient.SetDefaultHeaders(ctx.headers);
     }
 
     protected HttpClient: IHttpClient;
