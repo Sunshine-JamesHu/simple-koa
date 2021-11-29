@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-11-29 18:18:44
+ * @LastEditTime: 2021-11-29 18:26:26
+ * @LastEditors: Please set LastEditors
+ * @Description: 测试文件
+ * @FilePath: \simple-koa\test\controller\TestController.ts
+ */
 import { Controller } from "../../src/controller/Controller";
 import {
   Inject,
@@ -23,7 +31,7 @@ export interface ITestController {
 
 @Transient()
 @Injectable()
-@Router("/etst")
+@Router()
 export default class TestController
   extends Controller
   implements ITestController

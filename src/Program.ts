@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-11-29 18:18:44
+ * @LastEditTime: 2021-11-29 18:25:33
+ * @LastEditors: your name
+ * @Description: 启动文件
+ * @FilePath: \simple-koa\src\Program.ts
+ */
 import "reflect-metadata";
 import Koa from "koa";
 import { LoadAppConfig } from "./setting/SettingManager";
@@ -83,11 +91,6 @@ export default class Program {
 
   protected RegisterModules() {
     RegisterModuleByContainer();
-    const a = container.resolve("ISettingManager");
-    console.log(a);
-    const controllerBuilder = container.resolve<IControllerBuilder>(
-      CONTROLLERBUILDER_INJECT_TOKEN
-    );
   }
 
   public Start(port?: number) {
