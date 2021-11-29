@@ -1,36 +1,19 @@
 {
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Node 14",
     "compilerOptions": {
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
+        "lib": ["es2020"],
         "module": "commonjs",
-        "target": "es2017",
-        "noImplicitAny": true,
-        "moduleResolution": "node",
-        "sourceMap": true,
+        "target": "es2020",
         "outDir": "dist",
-        "baseUrl": ".",
-        "allowSyntheticDefaultImports": true,
-        "forceConsistentCasingInFileNames": true,
-        // "noImplicitReturns": true,
-        "suppressImplicitAnyIndexErrors": true,
-        // "noUnusedLocals": true,
-        // "strict": true,
-        "declaration": true,
+        "strict": true,
+        "esModuleInterop": true,
         "skipLibCheck": true,
-        "paths": {
-            "*": [
-                "node_modules/*",
-                "src/types/*"
-            ]
-        }
+        "forceConsistentCasingInFileNames": true,
+
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
     },
-    "include": [
-        "src/**/*",
-        "index.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        "logs",
-        "swaggerApi"
-    ]
+    "include": ["src/**/*","test/**/*"],
+    "exclude": ["node_modules", "**/*.spec.ts"]
 }

@@ -1,6 +1,4 @@
 {
-  "port": 8060,
-  "apiAddress": "http://192.168.1.93:9999",
-  "apiPrefix": "api",
-  "cors": true
+  "port": 30000,
+  "apiPrefix": "api"
 }
