@@ -4,7 +4,7 @@ import Router from "koa-router";
 import Koa from "koa";
 import { container } from "tsyringe";
 import { ModuleContainer } from "../di/ModuleContainer";
-import { Controller, IController } from "./Controller";
+import { IController } from "./Controller";
 import {
   ISettingManager,
   INJECT_TOKEN as SETTING_INJECT_TOKEN,
@@ -39,72 +39,73 @@ export class ControllerBuilder implements IControllerBuilder {
   }
 
   public CreateController(module: Function): ActionDescriptor[] | undefined {
-    if (module === Controller) return; // 不注册基类
-
     const modulePrototype = module.prototype;
-    const actions: ActionDescriptor[] = [];
-    if (modulePrototype && modulePrototype.IsController) {
-      console.log("注册Controller", module.name, modulePrototype);
-      const propKeys = Object.getOwnPropertyNames(modulePrototype);
-      const controllerName = modulePrototype.name;
-      propKeys.forEach((propKey) => {
-        if (propKey === "constructor") return; // 跳过构造函数
-
-        const property = modulePrototype[propKey];
-        if (property && typeof property === "function") {
-          const actionName = property.action;
-          const fullPath =
-            `/${this._apiPrefix}/${controllerName}/${actionName}`.replace(
-              /\/{2,}/g,
-              "/"
-            );
-
-          const mainFunc = async (ctx: Context, next: Next) => {
-            const paramList = property.paramList;
-            const args: any = [];
-            if (paramList) {
-              const paramKeys = Object.getOwnPropertyNames(paramList);
-              paramKeys.forEach((paramName) => {
-                const index = paramList[paramName];
-                if (paramName === REQUEST_BODY) {
-                  args[index] = (ctx.request as any).body;
-                } else {
-                  if (paramName === REQUEST_QUERY) {
-                    args[index] = { ...ctx.params, ...ctx.query };
-                  } else {
-                    args[index] = { ...ctx.params, ...ctx.query }[paramName];
-                  }
-                }
-              });
-            } else {
-              args[0] = {
-                body: (ctx.request as any).body,
-                params: ctx.params,
-                query: ctx.query,
-                files: (ctx.request as any).files,
-              };
-            }
-            const controller: any = container.resolve<IController>(
-              module as any
-            );
-            controller.SetContext(ctx); // 将Ctx丢进去
-            const result = property.apply(controller, args); // 执行函数
-
-            if (result instanceof Promise) {
-              ctx.response.body = await result; // 处理异步
-            } else {
-              ctx.response.body = result; // 处理同步
-            }
-          };
-
-          actions.push({
-            fullPath,
-            httpMethod: property.httpMethod,
-            func: mainFunc,
-          } as ActionDescriptor);
-        }
-      });
+    if (
+      !modulePrototype ||
+      !modulePrototype.IsController ||
+      !modulePrototype.path
+    ) {
+      return;
     }
+    const actions: ActionDescriptor[] = [];
+    console.log("注册Controller", module.name, modulePrototype);
+    const propKeys = Object.getOwnPropertyNames(modulePrototype);
+    const controllerPath = modulePrototype.path;
+    propKeys.forEach((propKey) => {
+      if (propKey === "constructor") return; // 跳过构造函数
+
+      const property = modulePrototype[propKey];
+      if (property && typeof property === "function") {
+        const actionName = property.action;
+        const fullPath =
+          `/${this._apiPrefix}/${controllerPath}/${actionName}`.replace(
+            /\/{2,}/g,
+            "/"
+          );
+
+        const mainFunc = async (ctx: Context, next: Next) => {
+          const paramList = property.paramList;
+          const args: any = [];
+          if (paramList) {
+            const paramKeys = Object.getOwnPropertyNames(paramList);
+            paramKeys.forEach((paramName) => {
+              const index = paramList[paramName];
+              if (paramName === REQUEST_BODY) {
+                args[index] = (ctx.request as any).body;
+              } else {
+                if (paramName === REQUEST_QUERY) {
+                  args[index] = { ...ctx.params, ...ctx.query };
+                } else {
+                  args[index] = { ...ctx.params, ...ctx.query }[paramName];
+                }
+              }
+            });
+          } else {
+            args[0] = {
+              body: (ctx.request as any).body,
+              params: ctx.params,
+              query: ctx.query,
+              files: (ctx.request as any).files,
+            };
+          }
+          const controller: any = container.resolve<IController>(module as any);
+          controller.SetContext(ctx); // 将Ctx丢进去
+          const result = property.apply(controller, args); // 执行函数
+
+          if (result instanceof Promise) {
+            ctx.response.body = await result; // 处理异步
+          } else {
+            ctx.response.body = result; // 处理同步
+          }
+        };
+
+        actions.push({
+          fullPath,
+          httpMethod: property.httpMethod,
+          func: mainFunc,
+        } as ActionDescriptor);
+      }
+    });
     return actions;
   }
 

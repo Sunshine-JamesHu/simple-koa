@@ -29,8 +29,10 @@ export function HttpOptions(action?: string) {
 export function HttpRequest(httpMethod: HttpMethod, action?: string) {
   return (target: any, name: string, descriptor: PropertyDescriptor) => {
     if (!action) action = name;
-
-    target[name].action = action;
+    target[name].action = `${action[0].toLowerCase()}${action.substring(
+      1,
+      action.length
+    )}`;
     target[name].httpMethod = GetHttpMethod(httpMethod);
   };
 }
