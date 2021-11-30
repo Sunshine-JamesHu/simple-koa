@@ -10,15 +10,25 @@ import "reflect-metadata";
 import Koa from "koa";
 import { LoadAppConfig } from "./setting/SettingManager";
 import { container } from "tsyringe";
+import { koaSwagger } from "koa2-swagger-ui";
 import {
   ModuleLoader,
   IModuleLoader,
   RegisterModuleByContainer,
 } from "./di/ModuleLoader";
 import {
-  INJECT_TOKEN as CONTROLLERBUILDER_INJECT_TOKEN,
+  INJECT_TOKEN as ControllerBuilder_INJECT_TOKEN,
   IControllerBuilder,
 } from "./controller/ControllerBuilder";
+
+import {
+  ISettingManager,
+  INJECT_TOKEN as Setting_INJECT_TOKEN,
+} from "./setting/SettingManager";
+import {
+  ISwaggerBuilder,
+  INJECT_TOKEN as SwaggerBuilder_INJECT_TOKEN,
+} from "./swagger/SwaggerBuilder";
 
 export default class Program {
   private readonly _app: Koa;
@@ -53,6 +63,7 @@ export default class Program {
    */
   protected OnApplicationInitialization() {
     this.CreateController();
+    this.CreateSwaggerApi();
   }
 
   /**
@@ -70,9 +81,19 @@ export default class Program {
    */
   protected CreateController() {
     const controllerBuilder = container.resolve<IControllerBuilder>(
-      CONTROLLERBUILDER_INJECT_TOKEN
+      ControllerBuilder_INJECT_TOKEN
     );
     controllerBuilder.CreateControllerByContainer(this.GetApp());
+  }
+
+  /**
+   * 创建SwaggerApi
+   */
+  protected CreateSwaggerApi() {
+    const swaggerBuilder = container.resolve<ISwaggerBuilder>(
+      SwaggerBuilder_INJECT_TOKEN
+    );
+    swaggerBuilder.CreateSwaggerApi(this.GetApp());
   }
 
   protected InitSettingManager() {
@@ -93,11 +114,19 @@ export default class Program {
     RegisterModuleByContainer();
   }
 
-  public Start(port?: number) {
+  public Start() {
     const app = this.GetApp();
+    const port = this.GetPortSetting();
     app.listen(port, () => {
       console.log(`Server running on port ${port}`);
       this.OnServerStarted();
     });
+  }
+
+  private GetPortSetting(): number {
+    const setting = container.resolve<ISettingManager>(Setting_INJECT_TOKEN);
+    const port = setting.GetConfig<number>("port");
+    if (port && port > 0) return port;
+    return 30000;
   }
 }

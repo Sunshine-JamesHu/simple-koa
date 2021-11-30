@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2021-11-29 18:18:44
- * @LastEditTime: 2021-11-29 18:26:26
- * @LastEditors: Please set LastEditors
- * @Description: 测试文件
- * @FilePath: \simple-koa\test\controller\TestController.ts
- */
 import { Controller } from "../../src/controller/Controller";
 import {
   Inject,
@@ -19,11 +11,12 @@ import {
   HttpPut,
   HttpPost,
 } from "../../src/router/Request";
+import { RequestQuery } from "../../src/router/RequestData";
 import { Router } from "../../src/router/Router";
 import { ITestService } from "../service/TestService";
 
 export interface ITestController {
-  GetTest(): string;
+  GetTest(data: string): string;
   PostTest(): string;
   PutTest(): string;
   DeleteTest(): string;
@@ -31,7 +24,7 @@ export interface ITestController {
 
 @Transient()
 @Injectable()
-@Router()
+@Router({ description: "测试服务" })
 export default class TestController
   extends Controller
   implements ITestController
@@ -41,8 +34,8 @@ export default class TestController
   }
 
   @HttpGet()
-  public GetTest(): string {
-    
+  public GetTest(@RequestQuery() data: any): string {
+    if (data.a) return data.a;
     return this.testService.TestService();
   }
   @HttpPost()
