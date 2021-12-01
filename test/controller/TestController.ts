@@ -1,19 +1,9 @@
-import { Controller } from "../../src/controller/Controller";
-import {
-  Inject,
-  Injectable,
-  Singleton,
-  Transient,
-} from "../../src/di/Dependency";
-import {
-  HttpDelete,
-  HttpGet,
-  HttpPut,
-  HttpPost,
-} from "../../src/router/Request";
-import { RequestQuery } from "../../src/router/RequestData";
-import { Router } from "../../src/router/Router";
-import { ITestService } from "../service/TestService";
+import { Controller } from '../../src/controller/Controller';
+import { Inject, Injectable, Singleton, Transient } from '../../src/di/Dependency';
+import { HttpDelete, HttpGet, HttpPut, HttpPost } from '../../src/router/Request';
+import { RequestQuery } from '../../src/router/RequestData';
+import { Router } from '../../src/router/Router';
+import { ITestService } from '../service/TestService';
 
 export interface ITestController {
   GetTest(data: string): string;
@@ -25,11 +15,8 @@ export interface ITestController {
 @Transient()
 @Injectable()
 @Router()
-export default class TestController
-  extends Controller
-  implements ITestController
-{
-  constructor(@Inject("ITestService") private testService: ITestService) {
+export default class TestController extends Controller implements ITestController {
+  constructor(@Inject('ITestService') private testService: ITestService) {
     super();
   }
 
@@ -40,15 +27,15 @@ export default class TestController
   }
   @HttpPost()
   public PostTest(): string {
-    return "PostTest";
+    return 'PostTest';
   }
   @HttpPut()
   public PutTest(): string {
-    return "PutTest";
+    return 'PutTest';
   }
 
   @HttpDelete()
   public DeleteTest(): string {
-    return "DeleteTest";
+    return 'DeleteTest';
   }
 }
