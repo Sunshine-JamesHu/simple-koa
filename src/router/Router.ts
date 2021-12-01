@@ -1,10 +1,10 @@
-import { METADATA_TOKEN as Controller_METADATA_TOKEN } from "../controller/Controller";
-const PATH_METADATA = "Path";
+import { GetControllerName, METADATA_TOKEN as Controller_METADATA_TOKEN } from '../controller/Controller';
+const PATH_METADATA = 'Path';
 
 export function Router(path?: string) {
   return (target: Function) => {
     if (!path) {
-      path = `/${target.name.replace("Controller", "").toLowerCase()}`;
+      path = `/${GetControllerName(target).toLowerCase()}`;
     }
     Reflect.defineMetadata(GetMetadataToken(), path, target);
   };

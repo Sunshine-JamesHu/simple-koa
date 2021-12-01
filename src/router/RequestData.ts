@@ -1,5 +1,5 @@
-export const REQUEST_BODY = "RequestBody";
-export const REQUEST_QUERY = "RequestQuery";
+export const REQUEST_BODY = 'RequestBody';
+export const REQUEST_QUERY = 'RequestQuery';
 
 export enum RequestParamType {
   Body = 0,

@@ -1,6 +1,6 @@
-import { Context } from "koa";
+import { Context } from 'koa';
 
-export const METADATA_TOKEN = "Controller";
+export const METADATA_TOKEN = 'Controller';
 
 export interface IController {}
 
@@ -21,4 +21,8 @@ export abstract class Controller implements IController {
 
 export function IsController(target: Function) {
   return Reflect.getMetadata(METADATA_TOKEN, target);
+}
+
+export function GetControllerName(controller: Function): string {
+  return controller.name.replace('Controller', '');
 }

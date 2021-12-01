@@ -29,31 +29,28 @@ export function HttpOptions(action?: string) {
 export function HttpRequest(httpMethod: HttpMethod, action?: string) {
   return (target: any, name: string, descriptor: PropertyDescriptor) => {
     if (!action) action = name;
-    target[name].action = `${action[0].toLowerCase()}${action.substring(
-      1,
-      action.length
-    )}`;
+    target[name].action = `${action[0].toLowerCase()}${action.substring(1, action.length)}`;
     target[name].httpMethod = GetHttpMethod(httpMethod);
   };
 }
 
 function GetHttpMethod(httpMethod: HttpMethod): string {
-  let methodStr = "get";
+  let methodStr = 'get';
   switch (httpMethod) {
     case HttpMethod.POST:
-      methodStr = "post";
+      methodStr = 'post';
       break;
     case HttpMethod.PUT:
-      methodStr = "put";
+      methodStr = 'put';
       break;
     case HttpMethod.DELETE:
-      methodStr = "delete";
+      methodStr = 'delete';
       break;
     case HttpMethod.OPTIONS:
-      methodStr = "options";
+      methodStr = 'options';
       break;
     default:
-      methodStr = "get";
+      methodStr = 'get';
       break;
   }
   return methodStr;
