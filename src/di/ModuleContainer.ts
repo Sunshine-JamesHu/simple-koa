@@ -1,4 +1,6 @@
 import { singleton } from "tsyringe";
+import { IsController } from "../controller/Controller";
+import { GetInjectInfo } from "./Dependency";
 
 @singleton()
 export class ModuleContainer {
@@ -33,7 +35,7 @@ export class ModuleContainer {
    * @returns
    */
   public GetAllController(): Array<Function> {
-    return this.GetAllModule().filter((p) => p.prototype.IsController);
+    return this.GetAllModule().filter((p) => IsController(p));
   }
 
   /**
@@ -41,6 +43,6 @@ export class ModuleContainer {
    * @returns
    */
   public GetNeedRegisterModule(): Array<Function> {
-    return this.GetAllModule().filter((p) => p.prototype.dependency);
+    return this.GetAllModule().filter((p) => !!GetInjectInfo(p));
   }
 }

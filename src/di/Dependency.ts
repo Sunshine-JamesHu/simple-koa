@@ -6,33 +6,48 @@ export enum ServiceLifetime {
   Transient = 2,
 }
 
+const METADATA_TOKEN = "InjectInfo";
+
+export interface InjectInfo {
+  token: string;
+  lifetime: ServiceLifetime;
+}
+
 export function Transient(token?: string) {
   return (target: Function) => {
-    InitDependency(target, ServiceLifetime.Transient, token);
+    DefineInjectInfo(target, ServiceLifetime.Transient, token);
   };
 }
 
 export function Singleton(token?: string) {
   return (target: Function) => {
-    InitDependency(target, ServiceLifetime.Singleton, token);
+    DefineInjectInfo(target, ServiceLifetime.Singleton, token);
   };
 }
 
 export function Scoped(token?: string) {
   return (target: Function) => {
-    InitDependency(target, ServiceLifetime.Scoped, token);
+    DefineInjectInfo(target, ServiceLifetime.Scoped, token);
   };
 }
 
-export const Injectable = injectable;
-export const Inject = inject;
-
-function InitDependency(
+function DefineInjectInfo(
   target: Function,
   lifetime: ServiceLifetime,
   token?: string
 ) {
   if (!token) token = target.name;
-  target.prototype.lifetime = lifetime;
-  target.prototype.token = token;
+  const injectInfo: InjectInfo = {
+    lifetime,
+    token,
+  };
+  Reflect.defineMetadata(METADATA_TOKEN, injectInfo, target);
 }
+
+export function GetInjectInfo(target: Function): InjectInfo {
+  return Reflect.getMetadata(METADATA_TOKEN, target);
+}
+
+export const Injectable = injectable;
+
+export const Inject = inject;

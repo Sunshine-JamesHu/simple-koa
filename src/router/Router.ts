@@ -1,16 +1,19 @@
-/**
- * 路由
- * @param path 路由
- * @param description 描述
- * @returns
- */
-export function Router(options?: { path?: string; description?: string }) {
+import { METADATA_TOKEN as Controller_METADATA_TOKEN } from "../controller/Controller";
+const PATH_METADATA = "Path";
+
+export function Router(path?: string) {
   return (target: Function) => {
-    let path = options?.path;
     if (!path) {
       path = `/${target.name.replace("Controller", "").toLowerCase()}`;
     }
-    target.prototype.path = path;
-    target.prototype.description = options?.description;
+    Reflect.defineMetadata(GetMetadataToken(), path, target);
   };
+}
+
+export function GetRouterPath(target: Function) {
+  return Reflect.getMetadata(GetMetadataToken(), target);
+}
+
+function GetMetadataToken() {
+  return `${Controller_METADATA_TOKEN}:${PATH_METADATA}`;
 }

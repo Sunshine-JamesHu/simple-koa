@@ -10,7 +10,7 @@ export interface IUserController {
 
 @Transient()
 @Injectable()
-@Router({ description: "用户服务" })
+@Router()
 export default class UserController
   extends Controller
   implements IUserController

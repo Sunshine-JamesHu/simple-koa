@@ -24,7 +24,7 @@ export interface ITestController {
 
 @Transient()
 @Injectable()
-@Router({ description: "测试服务" })
+@Router()
 export default class TestController
   extends Controller
   implements ITestController

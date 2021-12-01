@@ -1,10 +1,12 @@
-import Koa, { prototype } from "koa";
+import Koa from "koa";
 import Router from "koa-router";
 import { koaSwagger } from "koa2-swagger-ui";
 import { container } from "tsyringe";
+import { IsController } from "../controller/Controller";
 import { Inject, Injectable, Singleton } from "../di/Dependency";
 import { ModuleContainer } from "../di/ModuleContainer";
 import { REQUEST_BODY, REQUEST_QUERY } from "../router/RequestData";
+import { GetRouterPath } from "../router/Router";
 import {
   ISettingManager,
   INJECT_TOKEN as SETTING_INJECT_TOKEN,
@@ -117,31 +119,28 @@ export class SwaggerBuilder implements ISwaggerBuilder {
     const paths: {
       [key: string]: { [key: string]: ISwaggerPath };
     } = {};
+
     controllers.forEach((controller) => {
-      const controllerPrototype = controller.prototype;
-      if (
-        !controllerPrototype ||
-        !controllerPrototype.IsController ||
-        !controllerPrototype.path
-      ) {
+      const routerPath = GetRouterPath(controller);
+      if (!IsController(controller) || !routerPath) {
         return;
       }
-      const controllerPath = controllerPrototype.path;
+
       const tag = controller.name.replace("Controller", "");
       tags.push({
         name: tag,
-        description: controllerPrototype.description,
+        description: tag,
       });
 
-      const propKeys = Object.getOwnPropertyNames(controllerPrototype);
+      const propKeys = Object.getOwnPropertyNames(controller.prototype);
       propKeys.forEach((propKey) => {
         if (propKey === "constructor") return; // 跳过构造函数
 
-        const property = controllerPrototype[propKey];
+        const property = controller.prototype[propKey];
         if (property && typeof property === "function") {
           const actionName = property.action;
           const fullPath =
-            `/${this._apiPrefix}/${controllerPath}/${actionName}`.replace(
+            `/${this._apiPrefix}/${routerPath}/${actionName}`.replace(
               /\/{2,}/g,
               "/"
             );

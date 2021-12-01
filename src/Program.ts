@@ -1,21 +1,8 @@
-/*
- * @Author: your name
- * @Date: 2021-11-29 18:18:44
- * @LastEditTime: 2021-11-29 18:25:33
- * @LastEditors: your name
- * @Description: 启动文件
- * @FilePath: \simple-koa\src\Program.ts
- */
 import "reflect-metadata";
 import Koa from "koa";
 import { LoadAppConfig } from "./setting/SettingManager";
 import { container } from "tsyringe";
-import { koaSwagger } from "koa2-swagger-ui";
-import {
-  ModuleLoader,
-  IModuleLoader,
-  RegisterModuleByContainer,
-} from "./di/ModuleLoader";
+import { ModuleLoader, IModuleLoader } from "./di/ModuleLoader";
 import {
   INJECT_TOKEN as ControllerBuilder_INJECT_TOKEN,
   IControllerBuilder,
@@ -111,7 +98,8 @@ export default class Program {
   }
 
   protected RegisterModules() {
-    RegisterModuleByContainer();
+    const moduleLoader = container.resolve<IModuleLoader>(ModuleLoader);
+    moduleLoader.RegisterModuleByContainer();
   }
 
   public Start() {

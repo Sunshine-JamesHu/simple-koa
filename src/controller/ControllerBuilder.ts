@@ -4,7 +4,7 @@ import Router from "koa-router";
 import Koa from "koa";
 import { container } from "tsyringe";
 import { ModuleContainer } from "../di/ModuleContainer";
-import { IController } from "./Controller";
+import { IController, IsController } from "./Controller";
 import {
   ISettingManager,
   INJECT_TOKEN as SETTING_INJECT_TOKEN,
@@ -12,6 +12,7 @@ import {
 import { Inject, Injectable, Singleton } from "../di/Dependency";
 import { Context, Next } from "koa";
 import { REQUEST_BODY, REQUEST_QUERY } from "../router/RequestData";
+import { GetRouterPath } from "../router/Router";
 
 export const INJECT_TOKEN = "IControllerBuilder";
 
@@ -39,26 +40,21 @@ export class ControllerBuilder implements IControllerBuilder {
   }
 
   public CreateController(module: Function): ActionDescriptor[] | undefined {
-    const modulePrototype = module.prototype;
-    if (
-      !modulePrototype ||
-      !modulePrototype.IsController ||
-      !modulePrototype.path
-    ) {
+    const routerPath = GetRouterPath(module);
+    if (!IsController(module) || !routerPath) {
       return;
     }
     const actions: ActionDescriptor[] = [];
-    console.log("注册Controller", module.name, modulePrototype);
-    const propKeys = Object.getOwnPropertyNames(modulePrototype);
-    const controllerPath = modulePrototype.path;
+    console.log("注册Controller", module.name, routerPath);
+    const propKeys = Object.getOwnPropertyNames(module.prototype);
     propKeys.forEach((propKey) => {
       if (propKey === "constructor") return; // 跳过构造函数
-
-      const property = modulePrototype[propKey];
+      
+      const property = module.prototype[propKey];
       if (property && typeof property === "function") {
         const actionName = property.action;
         const fullPath =
-          `/${this._apiPrefix}/${controllerPath}/${actionName}`.replace(
+          `/${this._apiPrefix}/${routerPath}/${actionName}`.replace(
             /\/{2,}/g,
             "/"
           );
