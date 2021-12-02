@@ -11,12 +11,7 @@ export interface ITestController {
   PutTest(file: ArrayBuffer): string;
   DeleteTest(id: number): string;
 
-  ObjTest(): Test;
-}
-
-class Test {
-  public name?: string;
-  public age?: number;
+  LoggerTest(): void;
 }
 
 @Transient()
@@ -26,9 +21,14 @@ export default class TestController extends Controller implements ITestControlle
   constructor(@Inject('ITestService') private testService: ITestService) {
     super();
   }
+
   @HttpGet()
-  ObjTest(): Test {
-    throw new Error('Method not implemented.');
+  LoggerTest(): void {
+    this.Logger.LogDebug('这是一条Debug测试');
+    this.Logger.LogInfo('这是一条Info测试');
+    this.Logger.LogWarn('这是一条Warn测试');
+    this.Logger.LogError('这是一条Error测试');
+    this.Logger.LogFatal('这是一条Fatal测试');
   }
 
   @HttpGet()

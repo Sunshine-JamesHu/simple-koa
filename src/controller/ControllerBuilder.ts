@@ -5,12 +5,13 @@ import Koa from 'koa';
 import { container } from 'tsyringe';
 import { ModuleContainer } from '../di/ModuleContainer';
 import { IController, IsController } from './Controller';
-import { ISettingManager, INJECT_TOKEN as SETTING_INJECT_TOKEN } from '../setting/SettingManager';
+import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from '../setting/SettingManager';
 import { Inject, Injectable, Singleton } from '../di/Dependency';
 import { Context, Next } from 'koa';
 import { GetActionParamsMetadata } from '../router/RequestData';
 import { GetRouterPath } from '../router/Router';
 import { GetActionInfo, GetHttpMethodStr } from '../router/Request';
+import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 
 export const INJECT_TOKEN = 'IControllerBuilder';
 
@@ -30,10 +31,13 @@ export interface IControllerBuilder {
 @Singleton(INJECT_TOKEN)
 export class ControllerBuilder implements IControllerBuilder {
   private readonly _settingManager: ISettingManager;
+  private readonly _logger: ILogger;
+
   private readonly _apiPrefix: string;
 
-  constructor(@Inject(SETTING_INJECT_TOKEN) settingManager: ISettingManager) {
+  constructor(@Inject(Setting_INJECT_TOKEN) settingManager: ISettingManager, @Inject(Logger_INJECT_TOKEN) logger: ILogger) {
     this._settingManager = settingManager;
+    this._logger = logger;
     this._apiPrefix = settingManager.GetConfig<string>('apiPrefix') || 'api';
   }
 
@@ -43,7 +47,7 @@ export class ControllerBuilder implements IControllerBuilder {
       return;
     }
     const actions: ActionDescriptor[] = [];
-    console.log('注册Controller', module.name, routerPath);
+    this._logger.LogDebug(`Create Controller: ${module.name} -> ${routerPath}`);
     const propKeys = Object.getOwnPropertyNames(module.prototype);
     propKeys.forEach((propKey) => {
       if (propKey === 'constructor') return; // 跳过构造函数
@@ -107,7 +111,7 @@ export class ControllerBuilder implements IControllerBuilder {
       const actions = this.CreateController(element);
       if (actions && actions.length) {
         actions.forEach((action) => {
-          console.log(action.fullPath);
+          this._logger.LogDebug(`Action:${action.fullPath}`);
           router.register(action.fullPath, [action.httpMethod], action.func);
         });
       }

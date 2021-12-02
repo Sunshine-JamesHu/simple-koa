@@ -1,4 +1,6 @@
 import { Context } from 'koa';
+import { container } from 'tsyringe';
+import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 
 export const METADATA_TOKEN = 'Controller';
 
@@ -6,9 +8,12 @@ export interface IController {}
 
 @Reflect.metadata(METADATA_TOKEN, true)
 export abstract class Controller implements IController {
-  protected _context: Context | undefined;
+  private _context: Context | undefined;
+  protected Logger: ILogger;
 
-  constructor() {}
+  constructor() {
+    this.Logger = container.resolve<ILogger>(Logger_INJECT_TOKEN);
+  }
 
   private SetContext(ctx: Context): void {
     this._context = ctx;

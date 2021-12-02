@@ -1,8 +1,8 @@
-import * as path from "path";
-import * as fs from "fs";
-import { container, singleton, injectable } from "tsyringe";
-import { ModuleContainer } from "./ModuleContainer";
-import { GetInjectInfo, ServiceLifetime } from "./Dependency";
+import * as path from 'path';
+import * as fs from 'fs';
+import { container, singleton, injectable } from 'tsyringe';
+import { ModuleContainer } from './ModuleContainer';
+import { GetInjectInfo, ServiceLifetime } from './Dependency';
 
 export interface IModuleLoader {
   LoadModule(modulePath: string): void;
@@ -23,7 +23,7 @@ export class ModuleLoader implements IModuleLoader {
     try {
       files = fs.readdirSync(modulePath);
     } catch (error) {
-      console.error("Module路径配置错误,请检查配置后重试.");
+      console.error('Module路径配置错误,请检查配置后重试.');
       files = [];
     }
 
@@ -33,7 +33,7 @@ export class ModuleLoader implements IModuleLoader {
         this.LoadModule(fullFilePath);
       } else {
         const extName = path.extname(fullFilePath);
-        if (extName === ".ts" || extName === ".js") {
+        if (extName === '.ts' || extName === '.js') {
           const modules: any[] = require(fullFilePath);
           if (!modules) return;
 
@@ -53,7 +53,6 @@ export class ModuleLoader implements IModuleLoader {
   public RegisterModule(module: Function) {
     const injectInfo = GetInjectInfo(module);
     if (!injectInfo) return;
-    console.log(`注册Module: ${injectInfo.token} -> ${module.name}`);
     const lifetime = injectInfo.lifetime;
     if (!container.isRegistered(injectInfo.token)) {
       if (lifetime == ServiceLifetime.Singleton) {
