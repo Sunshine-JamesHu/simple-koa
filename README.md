@@ -18,7 +18,7 @@
 
 ### 快速开始
 
-#### 定义一个 get 请求 127.0.0.1:8000/hello 返回 HelloWorldController
+#### 定义一个Controller
 
 ```
 import Program, {
