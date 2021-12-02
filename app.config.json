@@ -1,4 +1,7 @@
 {
   "port": 30000,
-  "apiPrefix": "api"
+  "apiPrefix": "api",
+  "cors": {
+    "enable": true
+  }
 }

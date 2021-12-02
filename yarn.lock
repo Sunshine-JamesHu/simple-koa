@@ -159,6 +159,13 @@
   dependencies:
     "@types/koa" "*"
 
+"@types/koa2-cors@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.npmmirror.com/@types/koa2-cors/download/@types/koa2-cors-2.0.2.tgz#a348fc2a0e227fe60909effaf43396898742e8fc"
+  integrity sha1-o0j8Kg4if+YJCe/69DOWiYdC6Pw=
+  dependencies:
+    "@types/koa" "*"
+
 "@types/koa@*", "@types/koa@^2.13.4":
   version "2.13.4"
   resolved "https://registry.npmmirror.com/@types/koa/download/@types/koa-2.13.4.tgz?cache=0&sync_timestamp=1637266391124&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fkoa%2Fdownload%2F%40types%2Fkoa-2.13.4.tgz#10620b3f24a8027ef5cbae88b393d1b31205726b"
@@ -996,6 +1003,11 @@ koa-router@^10.1.1:
     koa-compose "^4.1.0"
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
+
+koa2-cors@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.npm.taobao.org/koa2-cors/download/koa2-cors-2.0.6.tgz#9ad23df3a0b9bb84530b46f5944f3fb576086554"
+  integrity sha1-mtI986C5u4RTC0b1lE8/tXYIZVQ=
 
 koa2-swagger-ui@^5.3.0:
   version "5.3.0"

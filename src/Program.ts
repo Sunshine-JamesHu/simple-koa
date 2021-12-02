@@ -9,6 +9,7 @@ import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from './setting
 import { ISwaggerBuilder, INJECT_TOKEN as SwaggerBuilder_INJECT_TOKEN } from './swagger/SwaggerBuilder';
 import { ILogger, InitLogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from './logger/Logger';
 import { InitGlobalError } from './error/Error';
+import { CorsOptions, AddCors } from './cors/Cors';
 
 export default class Program {
   private readonly _app: Koa;
@@ -45,6 +46,7 @@ export default class Program {
    * 初始化
    */
   protected OnApplicationInitialization() {
+    this.InitSysMiddlewares();
     this.CreateController();
     this.CreateSwaggerApi();
   }
@@ -102,6 +104,23 @@ export default class Program {
     InitGlobalError(this.GetApp());
   }
 
+  protected InitSysMiddlewares() {
+    this.InitCors();
+  }
+
+  protected InitCors() {
+    const setting = this.GetSettingManager();
+    const enableCors = setting.GetConfig<boolean>('cors:enable');
+    if (enableCors) {
+      const options = setting.GetConfig<CorsOptions>('cors:options');
+      AddCors(this.GetApp(), options);
+    }
+  }
+
+  private GetSettingManager() {
+    return container.resolve<ISettingManager>(Setting_INJECT_TOKEN);
+  }
+
   public Start() {
     const app = this.GetApp();
     const port = this.GetPortSetting();
@@ -113,7 +132,7 @@ export default class Program {
   }
 
   private GetPortSetting(): number {
-    const setting = container.resolve<ISettingManager>(Setting_INJECT_TOKEN);
+    const setting = this.GetSettingManager();
     const port = setting.GetConfig<number>('port');
     if (port && port > 0) return port;
     return 30000;
