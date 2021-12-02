@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @type/koa2-cors
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @types/koa-body
 
 PATH: 
   C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\dotnet\;C:\Program Files\TortoiseSVN\bin;C:\Program Files (x86)\PuTTY\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Program Files (x86)\NetSarang\Xftp 7\;C:\Program Files (x86)\IncrediBuild;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\Java\jdk1.8.0_301\bin;C:\Program Files\Java\jdk1.8.0_301\jre\bin;C:\Program Files (x86)\NetSarang\Xshell 7\;C:\Users\JamesHu\AppData\Local\Microsoft\WindowsApps;C:\Users\JamesHu\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\JamesHu\AppData\Local\Yarn\bin;c:\program files\esafenet\cobra docguard client;C:\Users\JamesHu\.dotnet\tools;C:\Users\JamesHu\.dotnet\tools;C:\Users\JamesHu\AppData\Roaming\npm;c:\dapr;C:\Users\JamesHu\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Elastic\Beats\8.0.0;C:\Users\JamesHu\.dapr\bin;C:\Users\JamesHu\AppData\Local\GitHubDesktop\bin
@@ -14,7 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: https://registry.npm.taobao.org/@type%2fkoa2-cors: Not found
+  Error: https://registry.npm.taobao.org/@types%2fkoa-body: Not found
       at Request.params.callback [as _callback] (C:\Program Files (x86)\Yarn\lib\cli.js:65364:18)
       at Request.self.callback (C:\Program Files (x86)\Yarn\lib\cli.js:129397:22)
       at Request.emit (events.js:315:20)
@@ -43,6 +43,7 @@ npm manifest:
     "dependencies": {
       "@types/koa": "^2.13.4",
       "@types/koa-router": "^7.4.4",
+      "@types/koa2-cors": "^2.0.2",
       "@types/log4js": "^2.3.5",
       "koa": "^2.13.4",
       "koa-body": "^4.2.0",
@@ -222,6 +223,13 @@ Lockfile:
     version "7.4.4"
     resolved "https://registry.nlark.com/@types/koa-router/download/@types/koa-router-7.4.4.tgz#db72bde3616365d74f00178d5f243c4fce7da572"
     integrity sha1-23K942FjZddPABeNXyQ8T859pXI=
+    dependencies:
+      "@types/koa" "*"
+  
+  "@types/koa2-cors@^2.0.2":
+    version "2.0.2"
+    resolved "https://registry.npmmirror.com/@types/koa2-cors/download/@types/koa2-cors-2.0.2.tgz#a348fc2a0e227fe60909effaf43396898742e8fc"
+    integrity sha1-o0j8Kg4if+YJCe/69DOWiYdC6Pw=
     dependencies:
       "@types/koa" "*"
   

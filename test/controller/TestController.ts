@@ -7,7 +7,7 @@ import { ITestService } from '../service/TestService';
 
 export interface ITestController {
   GetTest(data: { name: string }): string;
-  PostTest(id: string, data: Object): string;
+  PostTest(id: string, data: Object): any;
   PutTest(file: ArrayBuffer): string;
   DeleteTest(id: number): string;
 
@@ -44,9 +44,11 @@ export default class TestController extends Controller implements ITestControlle
   }
 
   @HttpPost()
-  public PostTest(@RequestQuery('id') id: string, @RequestBody() data: Object): string {
-    console.log(data);
-    return 'PostTest';
+  public PostTest(@RequestQuery('id') id: string, @RequestBody() data: Object): any {
+    return {
+      id: id,
+      ...data,
+    };
   }
 
   @HttpPut()

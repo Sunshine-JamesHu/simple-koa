@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import Koa from 'koa';
+import koaBody from 'koa-body';
 import { LoadAppConfig } from './setting/SettingManager';
 import { container } from 'tsyringe';
 import { ModuleLoader, IModuleLoader } from './di/ModuleLoader';
@@ -106,6 +107,8 @@ export default class Program {
 
   protected InitSysMiddlewares() {
     this.InitCors();
+
+    this.InitBody();
   }
 
   protected InitCors() {
@@ -115,6 +118,23 @@ export default class Program {
       const options = setting.GetConfig<CorsOptions>('cors:options');
       AddCors(this.GetApp(), options);
     }
+  }
+
+  protected InitBody() {
+    const app = this.GetApp();
+    const setting = this.GetSettingManager();
+    let maxFileSize = setting.GetConfig<number | undefined>('maxFileSize');
+    if (!maxFileSize) maxFileSize = 200 * 1024 * 1024;
+
+    app.use(
+      koaBody({
+        parsedMethods: ['POST', 'PUT', 'PATCH', 'DELETE', 'GET', 'HEAD'],
+        multipart: true,
+        formidable: {
+          maxFileSize: maxFileSize,
+        },
+      })
+    );
   }
 
   private GetSettingManager() {
