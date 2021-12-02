@@ -1,12 +1,15 @@
 {
   "name": "simple-koa",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "dist/index.js",
   "author": "jameshu",
   "license": "MIT",
+  "repository": "Sunshine-JamesHu/simple-koa",
   "scripts": {
     "start": "nodemon --inspect --watch \"./**/*.ts\" -e ts --exec \"node\" -r ts-node/register \"./test/App.ts\"",
-    "build": "tsc"
+    "prod": "tsc && node dist/test/App.js",
+    "build": "tsc",
+    "pub": "tsc && npm publish --registry https://registry.npmjs.org"
   },
   "dependencies": {
     "@types/koa": "^2.13.4",
