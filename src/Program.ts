@@ -8,6 +8,7 @@ import { INJECT_TOKEN as ControllerBuilder_INJECT_TOKEN, IControllerBuilder } fr
 import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from './setting/SettingManager';
 import { ISwaggerBuilder, INJECT_TOKEN as SwaggerBuilder_INJECT_TOKEN } from './swagger/SwaggerBuilder';
 import { ILogger, InitLogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from './logger/Logger';
+import { InitGlobalError } from './error/Error';
 
 export default class Program {
   private readonly _app: Koa;
@@ -32,10 +33,12 @@ export default class Program {
    * 初始化之前
    */
   protected OnPreApplicationInitialization() {
-    this.InitLogger();
+    this.InitLogger(); // 初始化日志
     this.InitSettingManager(); // 初始化设置
     this.InitModules(); // 初始化所有模块
     this.RegisterModules(); // 将所有模块注册到容器中
+
+    this.InitGlobalError();
   }
 
   /**
@@ -93,6 +96,10 @@ export default class Program {
 
   protected InitLogger() {
     InitLogger();
+  }
+
+  protected InitGlobalError() {
+    InitGlobalError(this.GetApp());
   }
 
   public Start() {

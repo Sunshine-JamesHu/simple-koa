@@ -12,6 +12,7 @@ export interface ITestController {
   DeleteTest(id: number): string;
 
   LoggerTest(): void;
+  GlobalErrorTest(): void;
 }
 
 @Transient()
@@ -20,6 +21,11 @@ export interface ITestController {
 export default class TestController extends Controller implements ITestController {
   constructor(@Inject('ITestService') private testService: ITestService) {
     super();
+  }
+
+  @HttpPost()
+  GlobalErrorTest(): void {
+    throw new Error('主动抛出错误');
   }
 
   @HttpGet()
@@ -39,6 +45,7 @@ export default class TestController extends Controller implements ITestControlle
 
   @HttpPost()
   public PostTest(@RequestQuery('id') id: string, @RequestBody() data: Object): string {
+    console.log(data);
     return 'PostTest';
   }
 

@@ -15,6 +15,7 @@ export abstract class Controller implements IController {
     this.Logger = container.resolve<ILogger>(Logger_INJECT_TOKEN);
   }
 
+  // 系统会调用该函数
   private SetContext(ctx: Context): void {
     this._context = ctx;
   }
