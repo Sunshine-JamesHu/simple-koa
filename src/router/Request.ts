@@ -6,35 +6,47 @@ export enum HttpMethod {
   OPTIONS = 4,
 }
 
-export function HttpGet(action?: string) {
-  return HttpRequest(HttpMethod.GET, action);
+const ACTION_INFO_METADATA = 'ActionInfo';
+
+export interface ActionInfo {
+  httpMethod: HttpMethod;
+  name: string;
+  returnType: any;
 }
 
-export function HttpPost(action?: string) {
-  return HttpRequest(HttpMethod.POST, action);
+export function HttpGet(actionName?: string) {
+  return HttpRequest(HttpMethod.GET, actionName);
 }
 
-export function HttpPut(action?: string) {
-  return HttpRequest(HttpMethod.PUT, action);
+export function HttpPost(actionName?: string) {
+  return HttpRequest(HttpMethod.POST, actionName);
 }
 
-export function HttpDelete(action?: string) {
-  return HttpRequest(HttpMethod.DELETE, action);
+export function HttpPut(actionName?: string) {
+  return HttpRequest(HttpMethod.PUT, actionName);
 }
 
-export function HttpOptions(action?: string) {
-  return HttpRequest(HttpMethod.OPTIONS, action);
+export function HttpDelete(actionName?: string) {
+  return HttpRequest(HttpMethod.DELETE, actionName);
 }
 
-export function HttpRequest(httpMethod: HttpMethod, action?: string) {
-  return (target: any, name: string, descriptor: PropertyDescriptor) => {
-    if (!action) action = name;
-    target[name].action = `${action[0].toLowerCase()}${action.substring(1, action.length)}`;
-    target[name].httpMethod = GetHttpMethod(httpMethod);
+export function HttpOptions(actionName?: string) {
+  return HttpRequest(HttpMethod.OPTIONS, actionName);
+}
+
+export function HttpRequest(httpMethod: HttpMethod, actionName?: string) {
+  return (target: any, key: string, descriptor: PropertyDescriptor) => {
+    if (!actionName) actionName = key;
+    const actionInfo: ActionInfo = {
+      name: GetActionName(actionName),
+      httpMethod: httpMethod,
+      returnType: Reflect.getMetadata('design:returntype', target, key),
+    };
+    Reflect.defineMetadata(ACTION_INFO_METADATA, actionInfo, descriptor.value);
   };
 }
 
-function GetHttpMethod(httpMethod: HttpMethod): string {
+export function GetHttpMethodStr(httpMethod: HttpMethod): string {
   let methodStr = 'get';
   switch (httpMethod) {
     case HttpMethod.POST:
@@ -54,4 +66,14 @@ function GetHttpMethod(httpMethod: HttpMethod): string {
       break;
   }
   return methodStr;
+}
+
+function GetActionName(actionName: string): string {
+  actionName = `${actionName[0].toLowerCase()}${actionName.substring(1, actionName.length)}`;
+  // if (actionName.endsWith('Async')) actionName = actionName.replace('Async', ''); // TODO:是否需要加上?????
+  return actionName;
+}
+
+export function GetActionInfo(action: Function): ActionInfo {
+  return Reflect.getMetadata(ACTION_INFO_METADATA, action);
 }
