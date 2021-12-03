@@ -1,6 +1,8 @@
 import 'reflect-metadata';
 import Koa from 'koa';
 import koaBody from 'koa-body';
+import koaCompress from 'koa-compress';
+import koaStatic from 'koa-static';
 import { LoadAppConfig } from './setting/SettingManager';
 import { container } from 'tsyringe';
 import { ModuleLoader, IModuleLoader } from './di/ModuleLoader';
@@ -107,10 +109,15 @@ export default class Program {
 
   protected InitSysMiddlewares() {
     this.InitCors();
+    this.InitCompress();
+    this.InitStaticResource();
 
     this.InitBody();
   }
 
+  /**
+   * 初始化跨域
+   */
   protected InitCors() {
     const setting = this.GetSettingManager();
     const enableCors = setting.GetConfig<boolean>('cors:enable');
@@ -120,6 +127,9 @@ export default class Program {
     }
   }
 
+  /**
+   * 初始化Body参数
+   */
   protected InitBody() {
     const app = this.GetApp();
     const setting = this.GetSettingManager();
@@ -135,6 +145,27 @@ export default class Program {
         },
       })
     );
+  }
+
+  /**
+   * 初始化压缩
+   */
+  protected InitCompress() {
+    const app = this.GetApp();
+    app.use(
+      koaCompress({
+        filter: (content_type) => {
+          // 压缩Filter
+          return /html|text|javascript|css|json/i.test(content_type);
+        },
+        threshold: 128 * 1024, // 超过64k就压缩
+      })
+    );
+  }
+
+  protected InitStaticResource() {
+    const app = this.GetApp();
+    app.use(koaStatic(`${this._rootPath}/public`));
   }
 
   private GetSettingManager() {

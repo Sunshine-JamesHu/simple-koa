@@ -1,10 +1,8 @@
-Simple-Koa
-==============
+# Simple-Koa
 
 本框架基于 Koa 搭建，拥有完整的 Koa 生态;
 
-功能
-==============
+# 功能
 
 1.简单且易于使用的 Controller 和 Router
 
@@ -12,17 +10,21 @@ Simple-Koa
 
 4.Swagger 文档
 
-5.数据仓储(日程中)
+5.日志管理
 
-6.HttpClient(日程中)
+6.QueueManager(日程中,目前打算支持 Kafka,RabbitMQ,MQTT)
 
-7.Jwt 验证(日程中)
+7.HttpClient(日程中)
 
+8.Jwt 验证(日程中)
 
-快速开始
-==============
+9.数据仓储(日程中)
 
-#### 定义一个Controller
+10.定时任务(日程中)
+
+# 快速开始
+
+#### 定义一个 Controller
 
 ```
 import Program, {
@@ -90,8 +92,7 @@ export default class TestController extends Controller implements ITestControlle
 
 ```
 
-启动
-==============
+# 启动
 
 ```
 import Program from 'simple-koa';
@@ -101,8 +102,7 @@ program.Start();
 
 ```
 
-访问
-==============
+# 访问
 
 http:127.0.0.1:30000(主界面)
 
