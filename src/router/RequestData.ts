@@ -1,4 +1,4 @@
-const ACTION_PARAMS_METADATA = 'ActionParams';
+const ACTION_PARAMS_METADATA = 'Sys:ActionParams';
 
 export enum RequestParamType {
   Body = 0,

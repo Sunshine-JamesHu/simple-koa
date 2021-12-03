@@ -13,6 +13,7 @@ import { ISwaggerBuilder, INJECT_TOKEN as SwaggerBuilder_INJECT_TOKEN } from './
 import { ILogger, InitLogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from './logger/Logger';
 import { InitGlobalError } from './error/Error';
 import { CorsOptions, AddCors } from './cors/Cors';
+import { RegisterQueues, StartQueues } from './queue/QueueManager';
 
 export default class Program {
   private readonly _app: Koa;
@@ -33,6 +34,8 @@ export default class Program {
     this.OnPostApplicationInitialization();
   }
 
+  //#region 程序预处理
+
   /**
    * 初始化之前
    */
@@ -42,42 +45,12 @@ export default class Program {
     this.InitModules(); // 初始化所有模块
     this.RegisterModules(); // 将所有模块注册到容器中
 
-    this.InitGlobalError();
+    this.InitGlobalError(); // 全局错误捕获
+    this.RegisterQueues(); // 注册管道
   }
 
-  /**
-   * 初始化
-   */
-  protected OnApplicationInitialization() {
-    this.InitSysMiddlewares();
-    this.CreateController();
-    this.CreateSwaggerApi();
-  }
-
-  /**
-   * 初始化之后
-   */
-  protected OnPostApplicationInitialization() {}
-
-  /**
-   * 当服务启动之后
-   */
-  protected OnServerStarted() {}
-
-  /**
-   * 创建控制器
-   */
-  protected CreateController() {
-    const controllerBuilder = container.resolve<IControllerBuilder>(ControllerBuilder_INJECT_TOKEN);
-    controllerBuilder.CreateControllerByContainer(this.GetApp());
-  }
-
-  /**
-   * 创建SwaggerApi
-   */
-  protected CreateSwaggerApi() {
-    const swaggerBuilder = container.resolve<ISwaggerBuilder>(SwaggerBuilder_INJECT_TOKEN);
-    swaggerBuilder.CreateSwaggerApi(this.GetApp());
+  protected InitLogger() {
+    InitLogger();
   }
 
   protected InitSettingManager() {
@@ -99,12 +72,25 @@ export default class Program {
     moduleLoader.RegisterModuleByContainer();
   }
 
-  protected InitLogger() {
-    InitLogger();
-  }
-
   protected InitGlobalError() {
     InitGlobalError(this.GetApp());
+  }
+
+  protected RegisterQueues() {
+    RegisterQueues();
+  }
+
+  //#endregion
+
+  //#region 程序初始化
+
+  /**
+   * 初始化
+   */
+  protected OnApplicationInitialization() {
+    this.InitSysMiddlewares();
+    this.CreateController();
+    this.CreateSwaggerApi();
   }
 
   protected InitSysMiddlewares() {
@@ -128,6 +114,30 @@ export default class Program {
   }
 
   /**
+   * 初始化压缩
+   */
+  protected InitCompress() {
+    const app = this.GetApp();
+    app.use(
+      koaCompress({
+        filter: (content_type) => {
+          // 压缩Filter
+          return /html|text|javascript|css|json/i.test(content_type);
+        },
+        threshold: 128 * 1024, // 超过128k就压缩
+      })
+    );
+  }
+
+  /**
+   * 初始化静态资源
+   */
+  protected InitStaticResource() {
+    const app = this.GetApp();
+    app.use(koaStatic(`${this._rootPath}/public`));
+  }
+
+  /**
    * 初始化Body参数
    */
   protected InitBody() {
@@ -148,30 +158,50 @@ export default class Program {
   }
 
   /**
-   * 初始化压缩
+   * 创建控制器
    */
-  protected InitCompress() {
-    const app = this.GetApp();
-    app.use(
-      koaCompress({
-        filter: (content_type) => {
-          // 压缩Filter
-          return /html|text|javascript|css|json/i.test(content_type);
-        },
-        threshold: 128 * 1024, // 超过64k就压缩
-      })
-    );
+  protected CreateController() {
+    const controllerBuilder = container.resolve<IControllerBuilder>(ControllerBuilder_INJECT_TOKEN);
+    controllerBuilder.CreateControllerByContainer(this.GetApp());
   }
 
-  protected InitStaticResource() {
-    const app = this.GetApp();
-    app.use(koaStatic(`${this._rootPath}/public`));
+  /**
+   * 创建SwaggerApi
+   */
+  protected CreateSwaggerApi() {
+    const swaggerBuilder = container.resolve<ISwaggerBuilder>(SwaggerBuilder_INJECT_TOKEN);
+    swaggerBuilder.CreateSwaggerApi(this.GetApp());
   }
 
-  private GetSettingManager() {
-    return container.resolve<ISettingManager>(Setting_INJECT_TOKEN);
+  //#endregion
+
+  //#region 程序初始化之后
+
+  /**
+   * 初始化之后
+   */
+  protected OnPostApplicationInitialization() {
+    this.StartQueues();
   }
 
+  protected StartQueues() {
+    StartQueues();
+  }
+
+  //#endregion
+
+  //#region 程序启动后
+
+  /**
+   * 当服务启动之后
+   */
+  protected OnServerStarted() {}
+
+  //#endregion
+
+  /**
+   *
+   */
   public Start() {
     const app = this.GetApp();
     const port = this.GetPortSetting();
@@ -180,6 +210,10 @@ export default class Program {
       Logger.LogInfo(`Server running on port ${port}`);
       this.OnServerStarted();
     });
+  }
+
+  private GetSettingManager() {
+    return container.resolve<ISettingManager>(Setting_INJECT_TOKEN);
   }
 
   private GetPortSetting(): number {

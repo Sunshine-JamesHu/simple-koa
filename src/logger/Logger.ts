@@ -1,4 +1,5 @@
 import log4js from 'log4js';
+import { container } from 'tsyringe';
 import { Singleton } from '../..';
 
 export const INJECT_TOKEN = 'ILogger';
@@ -52,6 +53,7 @@ export function InitLogger(options?: log4js.Configuration) {
     options = GetLogOptions();
   }
   log4js.configure(options);
+  container.registerSingleton<ILogger>(INJECT_TOKEN, Logger); // 直接注入到容器中
 }
 
 function GetLogOptions(): log4js.Configuration {

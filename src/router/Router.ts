@@ -1,5 +1,5 @@
 import { GetControllerName, METADATA_TOKEN as Controller_METADATA_TOKEN } from '../controller/Controller';
-const PATH_METADATA = 'Path';
+const PATH_METADATA = 'Sys:Path';
 
 export function Router(path?: string) {
   return (target: Function) => {

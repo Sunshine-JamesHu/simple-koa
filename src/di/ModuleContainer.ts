@@ -1,6 +1,7 @@
-import { singleton } from "tsyringe";
-import { IsController } from "../controller/Controller";
-import { GetInjectInfo } from "./Dependency";
+import { singleton } from 'tsyringe';
+import { IsController } from '../controller/Controller';
+import { IsQueueManager } from '../queue/QueueManager';
+import { GetInjectInfo } from './Dependency';
 
 @singleton()
 export class ModuleContainer {

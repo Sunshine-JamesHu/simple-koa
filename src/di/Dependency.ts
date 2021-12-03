@@ -1,4 +1,4 @@
-import { inject, injectable } from "tsyringe";
+import { inject, injectable } from 'tsyringe';
 
 export enum ServiceLifetime {
   Singleton = 0,
@@ -6,7 +6,7 @@ export enum ServiceLifetime {
   Transient = 2,
 }
 
-const METADATA_TOKEN = "InjectInfo";
+const METADATA_TOKEN = 'Sys:InjectInfo';
 
 export interface InjectInfo {
   token: string;
@@ -31,11 +31,7 @@ export function Scoped(token?: string) {
   };
 }
 
-function DefineInjectInfo(
-  target: Function,
-  lifetime: ServiceLifetime,
-  token?: string
-) {
+function DefineInjectInfo(target: Function, lifetime: ServiceLifetime, token?: string) {
   if (!token) token = target.name;
   const injectInfo: InjectInfo = {
     lifetime,

@@ -1,5 +1,6 @@
 import { Controller } from '../../src/controller/Controller';
 import { Inject, Injectable, Transient } from '../../src/di/Dependency';
+import { GetQueueToken, IQueueManager } from '../../src/queue/QueueManager';
 import { HttpDelete, HttpGet, HttpPut, HttpPost } from '../../src/router/Request';
 import { RequestBody, RequestQuery } from '../../src/router/RequestData';
 import { Router } from '../../src/router/Router';
@@ -13,14 +14,20 @@ export interface ITestController {
 
   LoggerTest(): void;
   GlobalErrorTest(): void;
+  QueuePubTest(data: any): Promise<void>;
 }
 
 @Transient()
 @Injectable()
 @Router()
 export default class TestController extends Controller implements ITestController {
-  constructor(@Inject('ITestService') private testService: ITestService) {
+  constructor(@Inject('ITestService') private testService: ITestService, @Inject(GetQueueToken('pub')) private pubQueueManager: IQueueManager) {
     super();
+  }
+
+  @HttpPost()
+  async QueuePubTest(@RequestBody() data: any): Promise<void> {
+    await this.pubQueueManager.PublishAsync('simple_koa_test', data);
   }
 
   @HttpPost()

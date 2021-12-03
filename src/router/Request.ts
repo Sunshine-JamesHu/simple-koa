@@ -6,7 +6,7 @@ export enum HttpMethod {
   OPTIONS = 4,
 }
 
-const ACTION_INFO_METADATA = 'ActionInfo';
+const ACTION_INFO_METADATA = 'Sys:ActionInfo';
 
 export interface ActionInfo {
   httpMethod: HttpMethod;
