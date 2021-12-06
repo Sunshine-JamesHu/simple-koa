@@ -5,7 +5,8 @@ import { container } from 'tsyringe';
 import { GetControllerName, IsController } from '../controller/Controller';
 import { Inject, Injectable, Singleton } from '../di/Dependency';
 import { ModuleContainer } from '../di/ModuleContainer';
-import { REQUEST_BODY, REQUEST_QUERY } from '../router/RequestData';
+import { GetActionInfo, GetHttpMethodStr } from '../router/Request';
+import { GetActionParamsMetadata } from '../router/RequestData';
 import { GetRouterPath } from '../router/Router';
 import { ISettingManager, INJECT_TOKEN as SETTING_INJECT_TOKEN } from '../setting/SettingManager';
 
@@ -130,39 +131,40 @@ export class SwaggerBuilder implements ISwaggerBuilder {
         if (propKey === 'constructor') return; // 跳过构造函数
 
         const property = controller.prototype[propKey];
-        if (property && typeof property === 'function') {
-          const actionName = property.action;
-          const fullPath = `/${this._apiPrefix}/${routerPath}/${actionName}`.replace(/\/{2,}/g, '/');
-          const parameters: Array<SwaggerParameter> = [];
-          const paramList = property.paramList;
-          if (paramList) {
-            const paramKeys = Object.getOwnPropertyNames(paramList);
-            paramKeys.forEach((paramKey) => {
-              if (paramKey === REQUEST_BODY) {
-                parameters.push({
-                  name: 'body',
-                  in: 'body',
-                  type: 'object',
-                  collectionFormat: 'multi',
-                });
-              } else if (paramKey === REQUEST_QUERY) {
-                parameters.push({
-                  name: 'query',
-                  in: 'query',
-                  type: 'object',
-                });
-              } else {
-                parameters.push({
-                  name: paramKey,
-                  in: 'query',
-                  type: 'string',
-                });
+        if (!property || typeof property !== 'function') return;
+
+        const actionInfo = GetActionInfo(property);
+        if (!actionInfo) return;
+
+        const actionName = actionInfo.name;
+        const fullPath = `/${this._apiPrefix}/${routerPath}/${actionName}`.replace(/\/{2,}/g, '/');
+        const parameters: Array<SwaggerParameter> = [];
+        const actionParams = GetActionParamsMetadata(property);
+        if (actionParams) {
+          actionParams.forEach((actionParam) => {
+            if (actionParam.in === 'body') {
+              parameters.push({
+                name: 'data',
+                in: 'body',
+                type: 'object',
+                collectionFormat: 'multi',
+              });
+            } else if (actionParam.in === 'query') {
+              let key = 'query';
+              if (actionParam.key) {
+                key = actionParam.key;
               }
-            });
-          }
-          paths[fullPath] = {};
-          paths[fullPath][property.httpMethod] = new SwaggerPath(tag, parameters);
+              parameters.push({
+                in: 'query',
+                name: key,
+                type: actionParam.type.name.toLowerCase(),
+              });
+            }
+          });
         }
+        const tmp: any = {};
+        tmp[GetHttpMethodStr(actionInfo.httpMethod)] = new SwaggerPath(tag, parameters);
+        paths[fullPath] = tmp;
       });
     });
 

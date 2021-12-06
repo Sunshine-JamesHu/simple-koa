@@ -1,21 +1,31 @@
 import { Context } from 'koa';
+import { Container } from '../di/Dependency';
+import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 
-export const METADATA_TOKEN = 'Controller';
+export const METADATA_TOKEN = 'Sys:Controller';
 
 export interface IController {}
 
 @Reflect.metadata(METADATA_TOKEN, true)
 export abstract class Controller implements IController {
-  protected _context: Context | undefined;
+  private _context: Context | undefined;
+  private readonly _logger: ILogger;
 
-  constructor() {}
+  constructor() {
+    this._logger = Container.resolve<ILogger>(Logger_INJECT_TOKEN);
+  }
 
+  // 系统会调用该函数
   private SetContext(ctx: Context): void {
     this._context = ctx;
   }
 
   protected Context(): Context {
     return this._context as Context;
+  }
+
+  protected get Logger() {
+    return this._logger;
   }
 }
 
