@@ -1,8 +1,9 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { container, singleton, injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { ModuleContainer } from './ModuleContainer';
-import { GetInjectInfo, ServiceLifetime } from './Dependency';
+import { GetInjectInfo, IsMultipleRegister, ServiceLifetime, Container, Injectable, NeedReplaceService, InjectInfo } from './Dependency';
+import { ArrayHelper } from '../tools/ArrayHelper';
 
 export interface IModuleLoader {
   LoadModule(modulePath: string): void;
@@ -11,7 +12,7 @@ export interface IModuleLoader {
 }
 
 @singleton()
-@injectable()
+@Injectable()
 export class ModuleLoader implements IModuleLoader {
   private readonly _moduleContainer: ModuleContainer;
   constructor(moduleContainer: ModuleContainer) {
@@ -53,24 +54,66 @@ export class ModuleLoader implements IModuleLoader {
   public RegisterModule(module: Function) {
     const injectInfo = GetInjectInfo(module);
     if (!injectInfo) return;
+
+    const isRegistered = Container.isRegistered(injectInfo.token);
+    const isMultipleRegister = IsMultipleRegister(module);
+
+    if (isRegistered && !isMultipleRegister) return;
+
     const lifetime = injectInfo.lifetime;
-    if (!container.isRegistered(injectInfo.token)) {
-      if (lifetime == ServiceLifetime.Singleton) {
-        container.registerSingleton(injectInfo.token, module as any);
-      } else if (lifetime == ServiceLifetime.Scoped) {
-        // TODO:暂时不支持此种注册方式
-      } else if (lifetime == ServiceLifetime.Transient) {
-        container.register(injectInfo.token, {
-          useClass: module as any,
-        });
-      }
+    if (lifetime == ServiceLifetime.Singleton) {
+      Container.registerSingleton(injectInfo.token, module as any);
+    } else if (lifetime == ServiceLifetime.Scoped) {
+      // TODO:暂时不支持此种注册方式
+    } else if (lifetime == ServiceLifetime.Transient) {
+      Container.register(injectInfo.token, {
+        useClass: module as any,
+      });
     }
   }
 
   public RegisterModuleByContainer() {
-    const modules = this._moduleContainer.GetAllModule();
-    modules.forEach((module) => {
+    const modules = this._moduleContainer.GetNeedRegisterModule();
+    const needRegisterModules = this.GetNeedRegisterModules(modules);
+    console.log(needRegisterModules);
+    needRegisterModules.forEach((module) => {
       this.RegisterModule(module);
     });
+  }
+
+  private GetNeedRegisterModules(allModule: Function[]): Function[] {
+    const groupModules = ArrayHelper.GroupBy<{ module: Function; injectInfo: InjectInfo }>(
+      allModule.map((module) => {
+        const injectInfo = GetInjectInfo(module);
+        return {
+          module,
+          injectInfo,
+        };
+      }),
+      'injectInfo:token'
+    );
+    let result: Function[] = [];
+    for (const key in groupModules) {
+      if (Object.prototype.hasOwnProperty.call(groupModules, key)) {
+        const data = groupModules[key];
+        let needRegisterModules: any[] = [];
+
+        for (let index = 0; index < data.length; index++) {
+          const element = data[index];
+
+          const needReplaceService = NeedReplaceService(element.module);
+          const isMultipleRegister = IsMultipleRegister(element.module);
+
+          if (needReplaceService && !isMultipleRegister) {
+            needRegisterModules = [element.module];
+            break;
+          }
+
+          needRegisterModules.push(element.module);
+        }
+        result = result.concat(needRegisterModules);
+      }
+    }
+    return result;
   }
 }

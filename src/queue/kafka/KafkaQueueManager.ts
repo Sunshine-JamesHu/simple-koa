@@ -79,7 +79,12 @@ export class KafkaSubscriber extends Subscriber {
     const consumer = new Consumer(client, topics, { autoCommit: true, groupId: this._options.groupId });
     consumer.on('message', (message) => {
       const eventKey = handlerMap[message.topic];
-      console.log(eventKey, JSON.parse(message.value as any));
+      this.EmitEvent(eventKey, {
+        ext: {
+          topic: message.topic,
+        },
+        data: message.value,
+      });
     });
   }
 

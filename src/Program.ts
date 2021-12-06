@@ -14,6 +14,8 @@ import { ILogger, InitLogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from './logg
 import { InitGlobalError } from './error/Error';
 import { CorsOptions, AddCors } from './cors/Cors';
 import { RegisterQueues, StartQueues } from './queue/QueueManager';
+import { Container } from './di/Dependency';
+import { IEventHandler, InitEventHandlers, INJECT_TOKEN as EventHandler_INJECT_TOKEN } from './event/EventHandler';
 
 export default class Program {
   private readonly _app: Koa;
@@ -91,6 +93,7 @@ export default class Program {
     this.InitSysMiddlewares();
     this.CreateController();
     this.CreateSwaggerApi();
+    this.InitEventHandlers();
   }
 
   protected InitSysMiddlewares() {
@@ -171,6 +174,13 @@ export default class Program {
   protected CreateSwaggerApi() {
     const swaggerBuilder = container.resolve<ISwaggerBuilder>(SwaggerBuilder_INJECT_TOKEN);
     swaggerBuilder.CreateSwaggerApi(this.GetApp());
+  }
+
+  /**
+   * 初始化事件处理者
+   */
+  protected InitEventHandlers() {
+    InitEventHandlers();
   }
 
   //#endregion

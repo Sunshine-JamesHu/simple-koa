@@ -45,8 +45,7 @@ export default class TestController extends Controller implements ITestControlle
   }
 
   @HttpGet()
-  public GetTest(@RequestQuery() data: { name: string }): string {
-    if (data.name) return data.name;
+  public GetTest(): string {
     return this.testService.TestService();
   }
 

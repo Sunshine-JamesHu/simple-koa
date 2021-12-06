@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { container } from 'tsyringe';
+import { Container } from '../di/Dependency';
 import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 
 export const METADATA_TOKEN = 'Sys:Controller';
@@ -12,7 +12,7 @@ export abstract class Controller implements IController {
   private readonly _logger: ILogger;
 
   constructor() {
-    this._logger = container.resolve<ILogger>(Logger_INJECT_TOKEN);
+    this._logger = Container.resolve<ILogger>(Logger_INJECT_TOKEN);
   }
 
   // 系统会调用该函数
