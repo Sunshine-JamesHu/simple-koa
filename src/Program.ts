@@ -4,7 +4,6 @@ import koaBody from 'koa-body';
 import koaCompress from 'koa-compress';
 import koaStatic from 'koa-static';
 import { LoadAppConfig } from './setting/SettingManager';
-import { container } from 'tsyringe';
 import { ModuleLoader, IModuleLoader } from './di/ModuleLoader';
 import { INJECT_TOKEN as ControllerBuilder_INJECT_TOKEN, IControllerBuilder } from './controller/ControllerBuilder';
 
@@ -15,7 +14,7 @@ import { InitGlobalError } from './error/Error';
 import { CorsOptions, AddCors } from './cors/Cors';
 import { RegisterQueues, StartQueues } from './queue/QueueManager';
 import { Container } from './di/Dependency';
-import { IEventHandler, InitEventHandlers, INJECT_TOKEN as EventHandler_INJECT_TOKEN } from './event/EventHandler';
+import { InitEventHandlers } from './event/EventHandler';
 
 export default class Program {
   private readonly _app: Koa;
@@ -60,7 +59,7 @@ export default class Program {
   }
 
   private InitModules() {
-    const moduleLoader = container.resolve<IModuleLoader>(ModuleLoader);
+    const moduleLoader = Container.resolve<IModuleLoader>(ModuleLoader);
     this.LoadModules(moduleLoader);
   }
 
@@ -70,7 +69,7 @@ export default class Program {
   }
 
   protected RegisterModules() {
-    const moduleLoader = container.resolve<IModuleLoader>(ModuleLoader);
+    const moduleLoader = Container.resolve<IModuleLoader>(ModuleLoader);
     moduleLoader.RegisterModuleByContainer();
   }
 
@@ -164,7 +163,7 @@ export default class Program {
    * 创建控制器
    */
   protected CreateController() {
-    const controllerBuilder = container.resolve<IControllerBuilder>(ControllerBuilder_INJECT_TOKEN);
+    const controllerBuilder = Container.resolve<IControllerBuilder>(ControllerBuilder_INJECT_TOKEN);
     controllerBuilder.CreateControllerByContainer(this.GetApp());
   }
 
@@ -172,7 +171,7 @@ export default class Program {
    * 创建SwaggerApi
    */
   protected CreateSwaggerApi() {
-    const swaggerBuilder = container.resolve<ISwaggerBuilder>(SwaggerBuilder_INJECT_TOKEN);
+    const swaggerBuilder = Container.resolve<ISwaggerBuilder>(SwaggerBuilder_INJECT_TOKEN);
     swaggerBuilder.CreateSwaggerApi(this.GetApp());
   }
 
@@ -216,14 +215,14 @@ export default class Program {
     const app = this.GetApp();
     const port = this.GetPortSetting();
     app.listen(port, () => {
-      const Logger = container.resolve<ILogger>(Logger_INJECT_TOKEN);
+      const Logger = Container.resolve<ILogger>(Logger_INJECT_TOKEN);
       Logger.LogInfo(`Server running on port ${port}`);
       this.OnServerStarted();
     });
   }
 
   private GetSettingManager() {
-    return container.resolve<ISettingManager>(Setting_INJECT_TOKEN);
+    return Container.resolve<ISettingManager>(Setting_INJECT_TOKEN);
   }
 
   private GetPortSetting(): number {

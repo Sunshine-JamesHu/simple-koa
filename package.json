@@ -1,7 +1,7 @@
 {
   "name": "simple-koa",
-  "version": "1.1.4",
-  "main": "index.ts",
+  "version": "1.1.5",
+  "main": "dist/index.js",
   "author": "jameshu",
   "license": "MIT",
   "repository": "Sunshine-JamesHu/simple-koa",
