@@ -1,6 +1,6 @@
 {
   "name": "simple-koa",
-  "version": "1.1.5",
+  "version": "1.1.7",
   "main": "dist/index.js",
   "author": "jameshu",
   "license": "MIT",
@@ -11,6 +11,9 @@
     "build": "tsc",
     "pub": "tsc && npm publish --registry https://registry.npmjs.org"
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@types/koa": "^2.13.4",
     "@types/koa-compress": "^4.0.3",
