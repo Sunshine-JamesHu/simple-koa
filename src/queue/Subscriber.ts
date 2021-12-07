@@ -30,7 +30,7 @@ export abstract class Subscriber implements ISubscriber {
 
   Start(): void {
     if (!this._handlerMap || !Object.keys(this._handlerMap).length) return;
-    console.log(Object.keys(this._handlerMap));
+    // console.log(Object.keys(this._handlerMap));
     this.Logger.LogInfo('启动订阅');
   }
 

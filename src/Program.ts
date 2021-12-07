@@ -12,7 +12,7 @@ import { ISwaggerBuilder, INJECT_TOKEN as SwaggerBuilder_INJECT_TOKEN } from './
 import { ILogger, InitLogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from './logger/Logger';
 import { InitGlobalError } from './error/Error';
 import { CorsOptions, AddCors } from './cors/Cors';
-import { RegisterQueues, StartQueues } from './queue/QueueManager';
+import { RegisterQueues, StartQueues, StopQueues } from './queue/QueueManager';
 import { Container } from './di/Dependency';
 import { InitEventHandlers } from './event/EventHandler';
 
@@ -208,6 +208,18 @@ export default class Program {
 
   //#endregion
 
+  //#region  程序退出
+
+  protected OnApplicationShutdown() {
+    this.StopQueues();
+  }
+
+  protected StopQueues() {
+    StopQueues();
+  }
+
+  //#endregion
+
   /**
    *
    */
@@ -218,6 +230,10 @@ export default class Program {
       const Logger = Container.resolve<ILogger>(Logger_INJECT_TOKEN);
       Logger.LogInfo(`Server running on port ${port}`);
       this.OnServerStarted();
+    });
+    process.on('SIGINT', () => {
+      this.OnApplicationShutdown();
+      process.exit(0);
     });
   }
 

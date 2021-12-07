@@ -89,6 +89,18 @@ export function StartQueues() {
   });
 }
 
+export function StopQueues() {
+  const queueSettings = GetQueuesSettings();
+  if (!queueSettings) return;
+  const queueKeys = Object.getOwnPropertyNames(queueSettings);
+  if (!queueKeys || !queueKeys.length) return;
+
+  queueKeys.forEach((key) => {
+    const manager = container.resolve<IQueueManager>(GetQueueToken(key));
+    manager.Stop();
+  });
+}
+
 function GetQueuesSettings() {
   const setting = container.resolve<ISettingManager>(Setting_INJECT_TOKEN);
   const queueSettings = setting.GetConfig<QueueSetting>('queues');
