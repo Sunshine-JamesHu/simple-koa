@@ -1,6 +1,6 @@
 {
   "name": "simple-koa",
-  "version": "1.1.13",
+  "version": "1.1.14",
   "main": "dist/index.js",
   "author": "jameshu",
   "license": "MIT",
@@ -21,7 +21,6 @@
     "@types/koa-static": "^4.0.2",
     "@types/koa2-cors": "^2.0.2",
     "@types/log4js": "^2.3.5",
-    "kafka-node": "^5.0.0",
     "kafkajs": "^1.15.0",
     "koa": "^2.13.4",
     "koa-body": "^4.2.0",
