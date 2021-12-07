@@ -1,4 +1,4 @@
-import { Producer, KafkaClient, ProduceRequest, KafkaClientOptions, ConsumerOptions, Consumer } from 'kafka-node';
+import { Producer, KafkaClient, ProduceRequest, KafkaClientOptions, ConsumerOptions, Consumer, TopicsNotExistError, Message } from 'kafka-node';
 import { IPublisher, Publisher } from '../Publisher';
 import { Queue } from '../Queue';
 import { IQueueManager, QueueManager } from '../QueueManager';
@@ -73,23 +73,32 @@ export class KafkaSubscriber extends Subscriber {
     super.Start();
     const handlerMap = this._handlerMap;
     const client = this.GetClient();
+    if (!Object.keys(handlerMap).length) return;
+
     const topics = Object.keys(handlerMap).map((p) => {
       return { topic: p } as any;
     });
     const consumer = new Consumer(client, topics, { autoCommit: true, groupId: this._options.groupId });
-    consumer.on('message', (message) => {
-      const eventKey = handlerMap[message.topic];
-      this.EmitEvent(eventKey, {
-        ext: {
-          topic: message.topic,
-        },
-        data: message.value,
-      });
-    });
+    consumer.on('message', (message) => this.OnMessage(message));
+    consumer.on('error', (error) => this.OnError(error));
   }
 
   private GetClient(): KafkaClient {
     return GetClient(this._options);
+  }
+
+  protected OnError(err: Error) {
+    this.Logger.LogError('On sub error', err);
+  }
+
+  protected OnMessage(message: Message) {
+    const eventKey = this._handlerMap[message.topic];
+    this.EmitEvent(eventKey, {
+      ext: {
+        topic: message.topic,
+      },
+      data: message.value,
+    });
   }
 }
 

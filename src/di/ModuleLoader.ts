@@ -34,6 +34,8 @@ export class ModuleLoader implements IModuleLoader {
         this.LoadModule(fullFilePath);
       } else {
         const extName = path.extname(fullFilePath);
+        if (fullFilePath.endsWith('.d.ts')) return; // 单独去掉.d.ts这个描述文件
+
         if (extName === '.ts' || extName === '.js') {
           const modules: any[] = require(fullFilePath);
           if (!modules) return;
@@ -75,7 +77,7 @@ export class ModuleLoader implements IModuleLoader {
   public RegisterModuleByContainer() {
     const modules = this._moduleContainer.GetNeedRegisterModule();
     const needRegisterModules = this.GetNeedRegisterModules(modules);
-    console.log(needRegisterModules);
+    // console.log(needRegisterModules);
     needRegisterModules.forEach((module) => {
       this.RegisterModule(module);
     });
