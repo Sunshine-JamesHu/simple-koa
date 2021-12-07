@@ -28,6 +28,8 @@ export default class TestController extends Controller implements ITestControlle
   @HttpPost()
   async QueuePubTest(@RequestBody() data: any): Promise<void> {
     await this.pubQueueManager.PublishAsync('simple_koa_test', data);
+    const test = { name: 'Buffer 测试' };
+    await this.pubQueueManager.PublishAsync('simple_koa_test', Buffer.from(JSON.stringify(test), 'utf-8'));
   }
 
   @HttpPost()

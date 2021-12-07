@@ -18,13 +18,6 @@
         "servers": "server.dev.cidc.top:9092",
         "clientId": "koa-kafka-sub"
       }
-    },
-    "test": {
-      "type": "mqtt",
-      "options": {
-        "servers": "server.dev.cidc.top:9092",
-        "clientId": "koa-mqtt-test"
-      }
     }
   }
 }

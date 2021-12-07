@@ -1209,6 +1209,11 @@ kafka-node@^5.0.0:
   optionalDependencies:
     snappy "^6.0.1"
 
+kafkajs@^1.15.0:
+  version "1.15.0"
+  resolved "https://registry.npmmirror.com/kafkajs/download/kafkajs-1.15.0.tgz#a5ada0d933edca2149177393562be6fb0875ec3a"
+  integrity sha1-pa2g2TPtyiFJF3OTVivm+wh17Do=
+
 keygrip@~1.1.0:
   version "1.1.0"
   resolved "https://registry.npmmirror.com/keygrip/download/keygrip-1.1.0.tgz#871b1681d5e159c62a445b0c74b615e0917e7226"

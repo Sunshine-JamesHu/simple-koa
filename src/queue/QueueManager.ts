@@ -28,14 +28,14 @@ export abstract class QueueManager implements IQueueManager {
     subscriber.Subscription(topic, eventKey);
   }
 
-  public Start(): void {
+  public async StartAsync(): Promise<void> {
     const subscriber = this.GetSubscriber();
-    subscriber.Start();
+    await subscriber.StartAsync();
   }
 
-  public Stop(): void {
+  public async StopAsync(): Promise<void> {
     const subscriber = this.GetSubscriber();
-    subscriber.Stop();
+    await subscriber.StopAsync();
   }
 
   protected abstract GetPublisher(): IPublisher;
@@ -83,9 +83,9 @@ export function StartQueues() {
   const queueKeys = Object.getOwnPropertyNames(queueSettings);
   if (!queueKeys || !queueKeys.length) return;
 
-  queueKeys.forEach((key) => {
+  queueKeys.forEach(async (key) => {
     const manager = container.resolve<IQueueManager>(GetQueueToken(key));
-    manager.Start();
+    await manager.StartAsync();
   });
 }
 
@@ -97,7 +97,7 @@ export function StopQueues() {
 
   queueKeys.forEach((key) => {
     const manager = container.resolve<IQueueManager>(GetQueueToken(key));
-    manager.Stop();
+    manager.StopAsync();
   });
 }
 

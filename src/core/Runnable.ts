@@ -1,4 +1,4 @@
 export interface IRunnable {
-  Start(): void;
-  Stop(): void;
+  StartAsync(): Promise<void>;
+  StopAsync(): Promise<void>;
 }

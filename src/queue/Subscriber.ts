@@ -28,14 +28,12 @@ export abstract class Subscriber implements ISubscriber {
     this._handlerMap[topic] = eventKey;
   }
 
-  Start(): void {
-    if (!this._handlerMap || !Object.keys(this._handlerMap).length) return;
-    // console.log(Object.keys(this._handlerMap));
-    this.Logger.LogInfo('启动订阅');
+  StartAsync(): Promise<void> {
+    return Promise.resolve();
   }
 
-  Stop(): void {
-    // TODO:不实现, 因为无法捕获到进程结束事件
+  StopAsync(): Promise<void> {
+    return Promise.resolve();
   }
 
   protected EmitEvent(topic: string, data: IEventData) {
