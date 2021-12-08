@@ -4,6 +4,9 @@
   "cors": {
     "enable": true
   },
+  "log": {
+    "logLevel": "debug"
+  },
   "queues": {
     "pub": {
       "type": "kafka",

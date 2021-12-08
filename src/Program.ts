@@ -3,7 +3,7 @@ import Koa from 'koa';
 import koaBody from 'koa-body';
 import koaCompress from 'koa-compress';
 import koaStatic from 'koa-static';
-import { LoadAppConfig } from './setting/SettingManager';
+import { InitSettingManager } from './setting/SettingManager';
 import { ModuleLoader, IModuleLoader } from './di/ModuleLoader';
 import { INJECT_TOKEN as ControllerBuilder_INJECT_TOKEN, IControllerBuilder } from './controller/ControllerBuilder';
 
@@ -41,8 +41,8 @@ export default class Program {
    * 初始化之前
    */
   protected OnPreApplicationInitialization() {
-    this.InitLogger(); // 初始化日志
     this.InitSettingManager(); // 初始化设置
+    this.InitLogger(); // 初始化日志
     this.InitModules(); // 初始化所有模块
     this.RegisterModules(); // 将所有模块注册到容器中
 
@@ -55,7 +55,7 @@ export default class Program {
   }
 
   protected InitSettingManager() {
-    LoadAppConfig();
+    InitSettingManager();
   }
 
   private InitModules() {

@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Singleton } from '../di/Dependency';
+import { Container, Singleton } from '../di/Dependency';
 
 const APP_CONFIG: { [key: string]: any } = {};
 const SetConfig = (cfg: any) => {
@@ -10,7 +10,7 @@ const SetConfig = (cfg: any) => {
   }
 };
 
-export function LoadAppConfig() {
+export function InitSettingManager() {
   try {
     let appConfig = '';
     if (process.env.Config_FILE && fs.existsSync(process.env.Config_FILE)) {
@@ -26,6 +26,7 @@ export function LoadAppConfig() {
       port: 30000,
     });
   }
+  Container.registerSingleton<ISettingManager>(INJECT_TOKEN, SettingManager); // 直接注入到容器中
 }
 
 export const INJECT_TOKEN = 'ISettingManager';

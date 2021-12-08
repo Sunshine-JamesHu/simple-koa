@@ -1,16 +1,19 @@
-import { ILogger } from '../../logger/Logger';
 import { Kafka, Producer, logLevel as LogLevel } from 'kafkajs';
+import AsyncLock from 'async-lock';
+import { ILogger } from '../../logger/Logger';
 import { Publisher } from '../Publisher';
 import { Subscriber } from '../Subscriber';
 import { KafkaOptions } from './KafkaOptions';
 
 export class KafkaPublisher extends Publisher {
   private readonly _client: Kafka;
+  private readonly _lock: AsyncLock;
   private producer: Producer | undefined;
   private producerTimer: NodeJS.Timeout | undefined;
   constructor(options: KafkaOptions) {
     super();
     this._client = GetClient(options, this.Logger);
+    this._lock = new AsyncLock({ timeout: 3000, maxPending: 2000 });
   }
 
   public async PublishAsync(topic: string, data: any): Promise<void> {
@@ -30,21 +33,41 @@ export class KafkaPublisher extends Publisher {
   }
 
   private async GetProducer(): Promise<Producer> {
-    try {
-      this.StartOrReBuildTimer();
-      if (this.producer) return this.producer;
-
-      const producer = this._client.producer();
-      this.Logger.LogDebug('开始连接Kafka');
-      await producer.connect();
-      this.Logger.LogDebug('Kafka连接成功');
-      this.producer = producer;
-
-      return producer;
-    } catch (error) {
-      this.Logger.LogError('Get kafka producer error', error);
-      throw error;
-    }
+    this.StartOrReBuildTimer();
+    if (this.producer) return this.producer;
+    return await new Promise((resolve, reject) => {
+      this._lock.acquire<Producer>(
+        'get_kafka_producer',
+        async (done) => {
+          if (this.producer) {
+            done(undefined, this.producer);
+          } else {
+            try {
+              const producer = this._client.producer();
+              this.Logger.LogDebug('开始连接Kafka');
+              await producer.connect();
+              this.Logger.LogDebug('Kafka连接成功');
+              done(undefined, producer);
+            } catch (error: any) {
+              done(error);
+            }
+          }
+        },
+        (err, ret) => {
+          if (err) {
+            this.Logger.LogError('Get kafka producer error', err);
+            reject(err);
+          } else if (ret) {
+            if (this.producer != ret) {
+              this.producer = ret;
+            }
+            resolve(ret);
+          } else {
+            reject();
+          }
+        }
+      );
+    });
   }
 
   private StartOrReBuildTimer() {
@@ -80,7 +103,6 @@ export class KafkaSubscriber extends Subscriber {
     }
     await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
-        const prefix = `${topic}[${partition} | ${message.offset}] / ${message.timestamp}`;
         this.OnMessage({ topic: topic, value: message.value });
       },
     });

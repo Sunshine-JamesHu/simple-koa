@@ -1,6 +1,6 @@
 import log4js from 'log4js';
-import { container } from 'tsyringe';
-import { Singleton } from '../..';
+import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from '../../src/setting/SettingManager';
+import { Singleton, Container } from '../../src/di/Dependency';
 
 export const INJECT_TOKEN = 'ILogger';
 
@@ -18,29 +18,58 @@ export interface ILogger {
 export class Logger implements ILogger {
   private readonly _loggers: { [key: string]: log4js.Logger } = {};
   constructor() {
-    this._loggers = {
-      debug: this.GetLogger('debug'),
-      info: this.GetLogger('info'),
-      warn: this.GetLogger('warn'),
-      error: this.GetLogger('error'),
-      fatal: this.GetLogger('fatal'),
-    };
+    this._loggers = this.GetLoggers();
   }
 
   public LogDebug(message: string, ...args: any[]): void {
-    this._loggers['debug'].debug(message, ...args);
+    this._loggers['debug']?.debug(message, ...args);
   }
   public LogInfo(message: string, ...args: any[]): void {
-    this._loggers['info'].info(message, ...args);
+    this._loggers['info']?.info(message, ...args);
   }
   public LogWarn(message: string, ...args: any[]): void {
-    this._loggers['warn'].warn(message, ...args);
+    this._loggers['warn']?.warn(message, ...args);
   }
   public LogError(message: string, ...args: any[]): void {
-    this._loggers['error'].error(message, ...args);
+    this._loggers['error']?.error(message, ...args);
   }
   public LogFatal(message: string, ...args: any[]): void {
-    this._loggers['fatal'].fatal(message, ...args);
+    this._loggers['fatal']?.fatal(message, ...args);
+  }
+
+  protected GetLoggers(): { [key: string]: log4js.Logger } {
+    const setting = Container.resolve<ISettingManager>(Setting_INJECT_TOKEN);
+    const logSetting = setting.GetConfig<LoggerOptions>('log');
+    let needAddLoggers: LoggerLevel[] = ['debug', 'info', 'warn', 'error', 'fatal'];
+    if (logSetting) {
+      if (logSetting.logLevel) {
+        if (Array.isArray(logSetting.logLevel)) {
+          needAddLoggers = logSetting.logLevel;
+        } else {
+          switch (logSetting.logLevel) {
+            case 'info':
+              needAddLoggers = ['info', 'warn', 'error', 'fatal'];
+              break;
+            case 'warn':
+              needAddLoggers = ['warn', 'error', 'fatal'];
+              break;
+            case 'error':
+              needAddLoggers = ['error', 'fatal'];
+              break;
+            case 'debug':
+            default:
+              break;
+          }
+        }
+      }
+    }
+    const result: { [key: string]: log4js.Logger } = {};
+
+    needAddLoggers.forEach((element) => {
+      result[element] = this.GetLogger(element);
+    });
+
+    return result;
   }
 
   protected GetLogger(level?: LoggerLevel) {
@@ -48,12 +77,16 @@ export class Logger implements ILogger {
   }
 }
 
+export interface LoggerOptions {
+  logLevel: LoggerLevel[] | LoggerLevel;
+}
+
 export function InitLogger(options?: log4js.Configuration) {
   if (!options) {
     options = GetLogOptions();
   }
   log4js.configure(options);
-  container.registerSingleton<ILogger>(INJECT_TOKEN, Logger); // 直接注入到容器中
+  Container.registerSingleton<ILogger>(INJECT_TOKEN, Logger); // 直接注入到容器中
 }
 
 function GetLogOptions(): log4js.Configuration {
@@ -66,12 +99,10 @@ function GetLogOptions(): log4js.Configuration {
     },
   };
 
-  AddLogger('debug', options);
-  AddLogger('warn', options);
-  AddLogger('info', options);
-  AddLogger('error', options);
-  AddLogger('fatal', options);
-
+  const needAddLoggers: LoggerLevel[] = ['debug', 'info', 'warn', 'error', 'fatal'];
+  needAddLoggers.forEach((element) => {
+    AddLogger(element, options);
+  });
   return options;
 }
 
