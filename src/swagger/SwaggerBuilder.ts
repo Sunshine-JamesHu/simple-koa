@@ -1,6 +1,8 @@
 import Koa from 'koa';
 import Router from 'koa-router';
-import { koaSwagger } from 'koa2-swagger-ui';
+import koaStatic from 'koa-static';
+import { join } from 'path';
+import { koaSwagger } from './koa2-swagger-ui/index';
 import { container } from 'tsyringe';
 import { GetControllerName, IsController } from '../controller/Controller';
 import { Inject, Injectable, Singleton } from '../di/Dependency';
@@ -85,6 +87,9 @@ export class SwaggerBuilder implements ISwaggerBuilder {
   public CreateSwaggerApi(app: Koa): void {
     const router = new Router();
     const swagger = this.GenSwaggerJson();
+
+    app.use(koaStatic(join(__dirname, 'koa2-swagger-ui')));
+    
     router.register('/swagger.json', ['get'], (ctx) => {
       ctx.set('Content-Type', 'application/json');
       ctx.body = swagger;
@@ -96,7 +101,7 @@ export class SwaggerBuilder implements ISwaggerBuilder {
       koaSwagger({
         routePrefix: false,
         swaggerOptions: {
-          url: '/swagger.json', // example path to json
+          url: '/swagger.json',
         },
       })
     );

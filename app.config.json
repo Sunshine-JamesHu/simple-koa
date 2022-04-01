@@ -6,21 +6,5 @@
   },
   "log": {
     "logLevel": "debug"
-  },
-  "queues": {
-    "pub": {
-      "type": "kafka",
-      "options": {
-        "servers": "server.dev.cidc.top:9092",
-        "clientId": "koa-kafka-pub"
-      }
-    },
-    "sub": {
-      "type": "kafka",
-      "options": {
-        "servers": "server.dev.cidc.top:9092",
-        "clientId": "koa-kafka-sub"
-      }
-    }
   }
 }

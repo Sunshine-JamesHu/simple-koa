@@ -1,13 +1,12 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import Router from 'koa-router';
-import Koa from 'koa';
+import Koa, { Context, Next } from 'koa';
 import { container } from 'tsyringe';
 import { ModuleContainer } from '../di/ModuleContainer';
 import { IController, IsController } from './Controller';
 import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from '../setting/SettingManager';
 import { Inject, Injectable, Singleton } from '../di/Dependency';
-import { Context, Next } from 'koa';
 import { GetActionParamsMetadata } from '../router/RequestData';
 import { GetRouterPath } from '../router/Router';
 import { GetActionInfo, GetHttpMethodStr } from '../router/Request';

@@ -21,15 +21,15 @@ export interface ITestController {
 @Injectable()
 @Router()
 export default class TestController extends Controller implements ITestController {
-  constructor(@Inject('ITestService') private testService: ITestService, @Inject(GetQueueToken('pub')) private pubQueueManager: IQueueManager) {
+  constructor(@Inject('ITestService') private testService: ITestService) {
     super();
   }
 
   @HttpPost()
   async QueuePubTest(@RequestBody() data: any): Promise<void> {
-    await this.pubQueueManager.PublishAsync('simple_koa_test', data);
+    // await this.pubQueueManager.PublishAsync('simple_koa_test', data);
     const test = { name: 'Buffer 测试' };
-    await this.pubQueueManager.PublishAsync('simple_koa_test', Buffer.from(JSON.stringify(test), 'utf-8'));
+    // await this.pubQueueManager.PublishAsync('simple_koa_test', Buffer.from(JSON.stringify(test), 'utf-8'));
   }
 
   @HttpPost()
