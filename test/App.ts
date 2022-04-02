@@ -1,16 +1,22 @@
 import 'reflect-metadata';
 import Program, { Container, GetEventKey, IQueueManagerFactory, QMF_INJECT_TOKEN } from '../index';
-import { QueueSubTest } from './eventHandlers/QueueSubTest';
+import { KafkaSubTest } from './eventHandlers/KafkaSubTest';
+import { MqttSubTest } from './eventHandlers/MqttSubTest';
 
 class App extends Program {
   override StartQueues() {
-    // const factory = Container.resolve<IQueueManagerFactory>(QMF_INJECT_TOKEN);
-    // const subQueueManager = factory.GetQueueManager('sub');
+    const factory = Container.resolve<IQueueManagerFactory>(QMF_INJECT_TOKEN);
 
-    // const testTopic = GetEventKey(QueueSubTest);
-    // subQueueManager.Subscription(testTopic, testTopic);
+    const kafkaManager = factory.GetQueueManager('kafkaTest');
+    const mqttManager = factory.GetQueueManager('mqttTest');
 
-    // super.StartQueues();
+    const mqttTestTopic = GetEventKey(MqttSubTest);
+    mqttManager.Subscription(mqttTestTopic, 'simple_koa_test/#');
+
+    const kafkaTestTopic = GetEventKey(KafkaSubTest);
+    kafkaManager.Subscription(kafkaTestTopic, kafkaTestTopic);
+
+    super.StartQueues();
   }
 }
 

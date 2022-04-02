@@ -10,13 +10,13 @@ export interface ISubscriber extends IRunnable {
    * @param topic 主题
    * @param eventKey 事件Key
    */
-  Subscription(topic: string, eventKey: string): void;
+  Subscription(eventKey: string, topic: string): void;
 }
 
 export abstract class Subscriber implements ISubscriber {
   private readonly _logger: ILogger;
   private readonly _eventBus: IEventBus;
-  protected readonly _handlerMap: { [key: string]: string };
+  protected readonly _handlerMap: { [key: string]: any };
 
   constructor() {
     this._handlerMap = {};
@@ -24,7 +24,7 @@ export abstract class Subscriber implements ISubscriber {
     this._eventBus = Container.resolve<IEventBus>(EventBus_INJECT_TOKEN);
   }
 
-  Subscription(topic: string, eventKey: string): void {
+  Subscription(eventKey: string, topic: string): void {
     this._handlerMap[topic] = eventKey;
   }
 
@@ -36,8 +36,8 @@ export abstract class Subscriber implements ISubscriber {
     return Promise.resolve();
   }
 
-  protected EmitEvent(topic: string, data: IEventData) {
-    this._eventBus.Publish(topic, data);
+  protected EmitEvent(eventKey: string, data: IEventData) {
+    this._eventBus.Publish(eventKey, data);
   }
 
   protected get Logger() {

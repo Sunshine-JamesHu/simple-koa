@@ -17,7 +17,8 @@ export class KafkaPublisher extends Publisher {
   }
 
   public async PublishAsync(topic: string, data: any): Promise<void> {
-    if (!data) return data;
+    if (!topic) throw new Error('topic is not null or empry');
+    if (!data) return;
 
     const isBuffer = data instanceof Buffer;
     if (!isBuffer) {
@@ -75,9 +76,9 @@ export class KafkaPublisher extends Publisher {
     const disconnTime = 1000 * 30;
     this.producerTimer = setTimeout(async () => {
       if (this.producer) {
-        this.Logger.LogDebug('30S没有操作,开始断开客户端');
+        this.Logger.LogDebug('Kafka客户端30S没有操作,开始断开客户端');
         await this.producer.disconnect();
-        this.Logger.LogDebug('客户端已经成功断开');
+        this.Logger.LogDebug('Kafka客户端已经成功断开');
         this.producer = undefined;
       }
     }, disconnTime);
