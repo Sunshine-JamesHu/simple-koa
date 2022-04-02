@@ -193,7 +193,7 @@ export class MqttSubscriber extends Subscriber {
     const eventKey = this._topicMapEventKey[topic];
     if (eventKey) return eventKey;
 
-    const curPaths = topic.split('/');
+    const curPaths = topic.split('/').filter((p) => p !== '$share'); // 要删除共享订阅标标志
     for (const key in this._handlerMap) {
       if (Object.prototype.hasOwnProperty.call(this._handlerMap, key)) {
         const paths = this._handlerMap[key];
