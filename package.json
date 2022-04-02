@@ -5,6 +5,11 @@
   "author": "jameshu",
   "license": "MIT",
   "repository": "Sunshine-JamesHu/simple-koa",
+  "keywords": [
+    "koa",
+    "koa2",
+    "simple-koa"
+  ],
   "scripts": {
     "start": "nodemon --inspect --watch \"./**/*.ts\" -e ts --exec \"node\" -r ts-node/register \"./test/App.ts\"",
     "prod": "tsc && node dist/test/App.js",
