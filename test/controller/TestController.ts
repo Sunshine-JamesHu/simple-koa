@@ -1,10 +1,10 @@
 import { Controller } from '../../src/controller/Controller';
 import { Inject, Injectable, Transient } from '../../src/di/Dependency';
-import { GetQueueToken, IQueueManager } from '../../src/queue/QueueManager';
 import { HttpDelete, HttpGet, HttpPut, HttpPost } from '../../src/router/Request';
 import { RequestBody, RequestQuery } from '../../src/router/RequestData';
 import { Router } from '../../src/router/Router';
 import { ITestService } from '../service/TestService';
+import { IQueueTestService } from '../service/QueueTestService';
 
 export interface ITestController {
   GetTest(data: { name: string }): string;
@@ -21,15 +21,15 @@ export interface ITestController {
 @Injectable()
 @Router()
 export default class TestController extends Controller implements ITestController {
-  constructor(@Inject('ITestService') private testService: ITestService) {
+  constructor(
+    @Inject('ITestService') private testService: ITestService, 
+    @Inject('IQueueTestService') private queueTestService: IQueueTestService) {
     super();
   }
 
   @HttpPost()
   async QueuePubTest(@RequestBody() data: any): Promise<void> {
-    // await this.pubQueueManager.PublishAsync('simple_koa_test', data);
-    const test = { name: 'Buffer 测试' };
-    // await this.pubQueueManager.PublishAsync('simple_koa_test', Buffer.from(JSON.stringify(test), 'utf-8'));
+    this.queueTestService.PublishAsync(data);
   }
 
   @HttpPost()
