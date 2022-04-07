@@ -5,6 +5,8 @@ import { RequestBody, RequestQuery } from '../../src/router/RequestData';
 import { Router } from '../../src/router/Router';
 import { ITestService } from '../service/TestService';
 import { IQueueTestService } from '../service/QueueTestService';
+import { AsyncDisposableTest, DisposableTest } from '../disposableTest/DisposableTest';
+import { UsingAsync } from '../../src/core/Disposable';
 
 export interface ITestController {
   GetTest(data: { name: string }): string;
@@ -21,9 +23,7 @@ export interface ITestController {
 @Injectable()
 @Router()
 export default class TestController extends Controller implements ITestController {
-  constructor(
-    @Inject('ITestService') private testService: ITestService, 
-    @Inject('IQueueTestService') private queueTestService: IQueueTestService) {
+  constructor(@Inject('ITestService') private testService: ITestService, @Inject('IQueueTestService') private queueTestService: IQueueTestService) {
     super();
   }
 
@@ -68,5 +68,26 @@ export default class TestController extends Controller implements ITestControlle
   public DeleteTest(@RequestQuery('id') id: number): string {
     console.log(id);
     return '删除成功';
+  }
+
+  @HttpGet()
+  async DisposableTest(): Promise<void> {
+    // const a = new DisposableTest();
+    // a.Dispose();
+    // const b = new AsyncDisposableTest();
+    // b.DisposeAsync();
+
+    const a1 = new DisposableTest();
+    UsingAsync(a1, () => {
+      console.log('shifangqian');
+    });
+    console.log('11111');
+
+    const a2 = new AsyncDisposableTest();
+    await UsingAsync(a2, () => {
+      console.log('shifangqian2');
+      return Promise.resolve();
+    });
+    console.log('22222');
   }
 }

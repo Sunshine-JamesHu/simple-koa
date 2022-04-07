@@ -15,6 +15,7 @@ import { CorsOptions, AddCors } from './cors/Cors';
 import { RegisterQueues, StartQueues, StopQueues } from './queue/QueueManager';
 import { Container } from './di/Dependency';
 import { InitEventHandlers } from './event/EventHandler';
+import { RegisterDbProviders } from './database/DatabaseProvider';
 
 export default class Program {
   private readonly _app: Koa;
@@ -47,6 +48,7 @@ export default class Program {
     this.RegisterModules(); // 将所有模块注册到容器中
 
     this.InitGlobalError(); // 全局错误捕获
+    this.RegisterDbProviders(); // 注册数据库
     this.RegisterQueues(); // 注册管道
   }
 
@@ -79,6 +81,10 @@ export default class Program {
 
   protected RegisterQueues() {
     RegisterQueues();
+  }
+
+  protected RegisterDbProviders() {
+    RegisterDbProviders();
   }
 
   //#endregion

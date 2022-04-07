@@ -1,4 +1,4 @@
-export const METADATA_TOKEN = 'Sys:Controller';
+export const METADATA_TOKEN = 'Sys:Queue';
 
 export declare type QueueType = 'kafka' | 'mqtt' | 'rabbitmq' | string;
 

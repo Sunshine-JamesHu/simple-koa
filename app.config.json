@@ -18,10 +18,22 @@
     "mqttTest": {
       "type": "mqtt",
       "options": {
-        "address": "mqtt://192.168.1.82",
+        "address": "mqtt://192.168.1.159",
         "clientId": "koa_mqtt_test",
         "userName": "ronds",
         "password": "ronds@123"
+      }
+    }
+  },
+  "databases": {
+    "default": {
+      "type": "postgres",
+      "options": {
+        "address": "192.168.1.159",
+        "port": 5432,
+        "database": "koa_test",
+        "userName": "postgres",
+        "password": "123456"
       }
     }
   }

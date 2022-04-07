@@ -1,4 +1,6 @@
 export class ArrayHelper {
+  private constructor() {}
+
   /**
    * 数组分组
    * @param array 原数组

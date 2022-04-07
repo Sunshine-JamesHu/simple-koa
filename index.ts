@@ -1,5 +1,5 @@
 import { Transient, Singleton, Injectable, Inject, GetInjectInfo, Container, Scoped, ReplaceService, AllowMultiple } from './src/di/Dependency';
-import { ArrayHelper } from './src/tools/ArrayHelper';
+import { ArrayHelper } from './src/core/ArrayHelper';
 import { ILogger, Logger } from './src/logger/Logger';
 import { IEventBus, EventBus } from './src/event/EventBus';
 import { EventHandler, EventKey, IEventHandler, IEventData, GetEventKey } from './src/event/EventHandler';

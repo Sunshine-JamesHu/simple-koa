@@ -18,7 +18,7 @@
 
 8.Jwt 验证(日程中)
 
-9.数据仓储(日程中)
+9.DatabaseProvider(目前已支持`postgres`,下一个支持的是`mysql`)
 
 10.定时任务(日程中)
 
@@ -170,6 +170,75 @@ export class QueueTestService extends Service implements IQueueTestService {
 }
 
 
+```
+
+#### 数据库操作
+
+目前支持`postgres`，下一个支持`mysql`,未来还将支持`mssql`,`mongo`,`cassandra`
+支持连接池，支持事务，支持多种数据库，支持同时连接多个数据库，暂无分布式锁，分布式事务的支持想法
+
+##### 配置文件
+
+```
+"databases": {
+    "default": {
+      "type": "postgres",
+      "options": {
+        "address": "192.168.1.159",
+        "port": 5432,
+        "database": "koa_test",
+        "userName": "postgres",
+        "password": "123456"
+      }
+    }
+  }
+```
+
+##### 用法
+
+可以使用`IDatabaseProviderFactory`来进行工厂注入
+也可以使用 `IDatabaseProvider` 来直接注入,InjectKey 为配置文件中的 key，默认为`default`
+
+`ExecuteAsync`函数用来执行数据库操作
+`UseTransaction`用来支持事务，抛出错误会自动回滚，结束后无报错会自动提交事务
+
+```
+@Injectable()
+@Singleton('IPostgresTestService')
+export class PostgresTestService extends Service implements IPostgresTestService {
+  constructor(
+    @Inject(DPF_INJECT_TOKEN) private dbProviderFactory: IDatabaseProviderFactory,
+    @Inject(DBP_INJECT_TOKEN) private dbProvider: IDatabaseProvider
+  ) {
+    super();
+  }
+
+  async GetUserName(id: number): Promise<string> {
+    const result = await this.dbProvider.ExecuteAsync<{ name: string }>(`SELECT "name" FROM public.test1 WHERE id = $1`, id);
+    return result.rows[0]?.name;
+  }
+
+  public async GetList(): Promise<Array<{ id: number; name: string }>> {
+    const dbProvider = this.dbProviderFactory.GetProvider();
+    const a = await dbProvider.ExecuteAsync('SELECT id, "name" FROM public.test1');
+    return a.rows;
+  }
+
+  public async Create(id: number, name: string): Promise<void> {
+    await this.dbProvider.UseTransaction(async (client) => {
+      await client.ExecuteAsync(`INSERT INTO public.test1 (id, "name") VALUES($1, $2)`, id, name);
+    });
+  }
+
+  public async BatchCreate(data: { id: number; name: string }[]): Promise<void> {
+    await this.dbProvider.UseTransaction(async (client) => {
+      for (let index = 0; index < data.length; index++) {
+        const element = data[index];
+        await client.ExecuteAsync(`INSERT INTO public.test1 (id, "name") VALUES($1, $2)`, element.id, element.name);
+      }
+    });
+  }
+}
 ```
 
 # 启动

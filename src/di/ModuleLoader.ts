@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import { singleton } from 'tsyringe';
 import { ModuleContainer } from './ModuleContainer';
 import { GetInjectInfo, IsMultipleRegister, ServiceLifetime, Container, Injectable, NeedReplaceService, InjectInfo } from './Dependency';
-import { ArrayHelper } from '../tools/ArrayHelper';
+import { ArrayHelper } from '../core/ArrayHelper';
 
 export interface IModuleLoader {
   LoadModule(modulePath: string): void;
