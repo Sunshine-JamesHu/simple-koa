@@ -31,6 +31,7 @@ yarn add nodemon typescript ts-node --dev # 添加运行调试所需
 ```
 
 新建一个文件夹 `src`，在`src`文件夹中新建项目入口`App.ts` 
+
 **注意，启动文件必须放在src文件夹下，否则会程序出现起不来的问题**
 
 ```
@@ -87,6 +88,7 @@ yarn start
 访问界面
 
 [http:127.0.0.1:30000](http:127.0.0.1:30000) 主界面
+
 [http:127.0.0.1:30000/swagger](http:127.0.0.1:30000/swagger) swaggerApi
 
 #### 定义一个 Controller
