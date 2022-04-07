@@ -143,6 +143,7 @@ export default class Program {
   protected InitStaticResource() {
     const app = this.GetApp();
     app.use(koaStatic(`${this._rootPath}/public`));
+    app.use(koaStatic(`${__dirname}/../public`));
   }
 
   /**

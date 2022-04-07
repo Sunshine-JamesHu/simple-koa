@@ -1,6 +1,6 @@
 {
   "name": "simple-koa",
-  "version": "1.1.19",
+  "version": "1.1.20",
   "main": "dist/index.js",
   "author": "jameshu",
   "license": "MIT",
@@ -12,9 +12,9 @@
   ],
   "scripts": {
     "start": "nodemon --inspect --watch \"./**/*.ts\" -e ts --exec \"node\" -r ts-node/register \"./test/App.ts\"",
-    "prod": "tsc && node dist/test/App.js",
-    "build": "tsc",
-    "pub": "tsc && npm publish --registry https://registry.npmjs.org"
+    "prod": "gulp && node dist/test/App.js",
+    "build": "gulp",
+    "pub": "gulp && npm publish --registry https://registry.npmjs.org"
   },
   "files": [
     "dist"
@@ -46,6 +46,8 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
     "nodemon": "^2.0.15",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"

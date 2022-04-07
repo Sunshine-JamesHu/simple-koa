@@ -9,8 +9,11 @@ import { RequestBody, RequestQuery } from './src/router/RequestData';
 import { HttpRequest, HttpGet, HttpDelete, HttpPut, HttpOptions, HttpPost } from './src/router/Request';
 import { IService, Service } from './src/service/Service';
 import { IController, Controller } from './src/controller/Controller';
-import { IQueueManager, QueueManager } from './src/queue/QueueManager';
-import { IQueueManagerFactory, QueueManagerFactory, INJECT_TOKEN as QMF_INJECT_TOKEN } from './src/queue/QueueManagerFactory';
+import { IQueueManager } from './src/queue/QueueManager';
+import { IQueueManagerFactory, INJECT_TOKEN as QMF_INJECT_TOKEN } from './src/queue/QueueManagerFactory';
+
+import { IDatabaseProviderFactory, INJECT_TOKEN as DBPF_INJECT_TOKEN } from './src/database/DatabaseProviderFactory';
+import { IDatabaseProvider, INJECT_TOKEN as DBP_INJECT_TOKEN, GetDatabaseProviderToken } from './src/database/DatabaseProvider';
 
 import Program from './src/Program'; // 这一句必须放在最后面,否则打出来的包就会有问题
 
@@ -40,9 +43,7 @@ export {
   ISettingManager,
   SettingManager,
   IQueueManager,
-  QueueManager,
   IQueueManagerFactory,
-  QueueManagerFactory,
   QMF_INJECT_TOKEN,
   HttpGet,
   HttpPost,
@@ -54,6 +55,11 @@ export {
   RequestBody,
   RequestQuery,
   ArrayHelper,
+  IDatabaseProviderFactory,
+  DBPF_INJECT_TOKEN,
+  IDatabaseProvider,
+  DBP_INJECT_TOKEN,
+  GetDatabaseProviderToken,
 };
 
 export default Program;
