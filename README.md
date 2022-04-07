@@ -22,7 +22,72 @@
 
 10.定时任务(日程中)
 
-# 快速开始
+# 启动
+
+```
+yarn init  # 初始化项目
+yarn add simple-koa # 添加框架引用
+yarn add nodemon typescript ts-node --dev # 添加运行调试所需
+```
+
+新建一个文件夹 `src`，在`src`文件夹中新建项目入口`App.ts` 
+**注意，启动文件必须放在src文件夹下，否则会程序出现起不来的问题**
+
+```
+// App.ts
+import Program from 'simple-koa';
+
+const program = new Program(__dirname);
+program.Start();
+```
+
+添加 `tsconfig.json` (案例仅供参考,可以自己任意配置)
+
+```
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Node 14",
+    "compilerOptions": {
+        "lib": ["es2020"],
+        "module": "commonjs",
+        "target": "es2020",
+        "baseUrl": ".",
+        "outDir": "dist",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "suppressImplicitAnyIndexErrors": true,
+
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": true
+    },
+    "include": ["src/**/*", "App.ts"],
+    "exclude": ["node_modules", "**/*.spec.ts", "dist/**/*"]
+}
+```
+
+在 `package.json` 添加启动命令
+
+```
+  "scripts": {
+    "start": "nodemon --inspect --watch \"./src/**/*.ts\" -e ts --exec \"node\" -r ts-node/register \"./src/App.ts\""
+  }
+```
+
+启动项目
+
+```
+yarn start
+```
+
+访问界面
+
+[http:127.0.0.1:30000](http:127.0.0.1:30000) 主界面
+[http:127.0.0.1:30000/swagger](http:127.0.0.1:30000/swagger) swaggerApi
 
 #### 定义一个 Controller
 
@@ -240,19 +305,3 @@ export class PostgresTestService extends Service implements IPostgresTestService
   }
 }
 ```
-
-# 启动
-
-```
-import Program from 'simple-koa';
-
-const program = new Program(__dirname);
-program.Start();
-
-```
-
-# 访问
-
-http:127.0.0.1:30000(主界面)
-
-http:127.0.0.1:30000/swagger(SwaggerApi)
