@@ -192,13 +192,6 @@
   resolved "https://registry.npmmirror.com/@types/lodash/-/lodash-4.14.181.tgz"
   integrity sha512-n3tyKthHJbkiWhDZs3DkhkCzt2MexYHXlX0td5iMplyfwketaOeKboEVBqzceH7juqvEg3q5oUoBFxSLu7zFag==
 
-"@types/log4js@^2.3.5":
-  version "2.3.5"
-  resolved "https://registry.npm.taobao.org/@types/log4js/download/@types/log4js-2.3.5.tgz"
-  integrity sha1-TR5W2lPTwYIMCOnNUJLmjD4egi8=
-  dependencies:
-    log4js "*"
-
 "@types/mime@^1":
   version "1.3.2"
   resolved "https://registry.npmmirror.com/@types/mime/download/@types/mime-1.3.2.tgz?cache=0&sync_timestamp=1637267530748&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fmime%2Fdownload%2F%40types%2Fmime-1.3.2.tgz"
@@ -1056,8 +1049,8 @@ keyv@^3.0.0:
 
 koa-body@^4.2.0:
   version "4.2.0"
-  resolved "https://registry.npm.taobao.org/koa-body/download/koa-body-4.2.0.tgz"
-  integrity sha1-NyKSCLggdhrKWCLRTF/FXO4xsm8=
+  resolved "https://registry.npmmirror.com/koa-body/-/koa-body-4.2.0.tgz#37229208b820761aca5822d14c5fc55cee31b26f"
+  integrity sha512-wdGu7b9amk4Fnk/ytH8GuWwfs4fsB5iNkY8kZPpgQVb04QZSv85T0M8reb+cJmvLE8cjPYvBzRikD3s6qz8OoA==
   dependencies:
     "@types/formidable" "^1.0.31"
     co-body "^5.1.1"
@@ -1171,7 +1164,7 @@ lodash@^4.17.21:
   resolved "https://registry.npmmirror.com/lodash/-/lodash-4.17.21.tgz"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
-log4js@*, log4js@^6.3.0:
+log4js@^6.3.0:
   version "6.3.0"
   resolved "https://registry.npm.taobao.org/log4js/download/log4js-6.3.0.tgz"
   integrity sha1-EN+vu0NDUaPjAnegC5h5RG9xW8s=
