@@ -1,4 +1,4 @@
-import { IPostgresTestService } from '../service/PostgresTestService';
+import { IDbTestService } from '../service/DbTestService';
 import { Controller } from '../../src/controller/Controller';
 import { Inject, Injectable, Transient } from '../../src/di/Dependency';
 import { HttpGet, HttpPost } from '../../src/router/Request';
@@ -16,7 +16,7 @@ export interface IDbController {
 @Injectable()
 @Router()
 export default class DbController extends Controller implements IDbController {
-  constructor(@Inject('IPostgresTestService') private pgService: IPostgresTestService) {
+  constructor(@Inject('IDbTestService') private pgService: IDbTestService) {
     super();
   }
 

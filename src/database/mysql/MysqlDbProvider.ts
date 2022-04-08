@@ -1,18 +1,18 @@
 import { DatabaseProvider } from '../DatabaseProvider';
 import { Database } from '../Database';
 
-import { Pool, PoolConfig } from 'pg';
-import { PostgresOptions } from './PostgresOptions';
-import { PostgresClient } from './PostgresClient';
+import mysql from 'mysql';
 import { UsingAsync } from '../../core/Disposable';
 import { ExecuteResult, IDatabaseClient } from '../DatabaseClient';
+import { MysqlOptions } from './MysqlOptions';
+import { MysqlClient } from './MysqlClient';
 
-@Database('postgres')
-export class PostgresDbProvider extends DatabaseProvider {
-  protected ConnPool: Pool;
-  protected Options: PostgresOptions;
+@Database('mysql')
+export class MysqlDbProvider extends DatabaseProvider {
+  protected ConnPool: mysql.Pool;
+  protected Options: MysqlOptions;
 
-  constructor(options: PostgresOptions) {
+  constructor(options: MysqlOptions) {
     super();
     this.Options = options;
     this.ConnPool = this.GetConnPool(options);
@@ -43,31 +43,27 @@ export class PostgresDbProvider extends DatabaseProvider {
     return result;
   }
 
-  protected GetConnPool(options: PostgresOptions) {
-    const pgOpt: PoolConfig = {
+  protected GetConnPool(options: MysqlOptions) {
+    const mysqlOpt: mysql.PoolConfig = {
       host: options.address,
       port: options.port ?? 5432,
       database: options.database,
       user: options.userName,
       password: options.password,
-      // log: (...msgs: any[]) => {
-      //   this.Logger.LogDebug('Postgres', ...msgs);
-      // },
     };
     if (options.pool) {
-      // 做一个容错
-      if (options.pool.min && options.pool.min < 0) {
-        options.pool.min = 0;
-      }
-
-      pgOpt.min = options.pool.min ?? 0; // 最小连接数
-      pgOpt.max = options.pool.max ?? 20; // 最大连接数
+      mysqlOpt.connectionLimit = options.pool.max ?? 20;
     }
-    return new Pool(pgOpt);
+    return mysql.createPool(mysqlOpt);
   }
 
-  protected async GetClientAsync(): Promise<PostgresClient> {
-    const client = await this.ConnPool.connect();
-    return new PostgresClient(client);
+  protected GetClientAsync(): Promise<MysqlClient> {
+    return new Promise((resolve, reject) => {
+      this.ConnPool.getConnection((err, connection) => {
+        if (err) reject(err);
+        var client = new MysqlClient(connection);
+        resolve(client);
+      });
+    });
   }
 }

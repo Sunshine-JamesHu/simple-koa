@@ -1,8 +1,3 @@
-export interface PostgresOptions {
-  address: string;
-  port?: number;
-  database: string;
-  userName: string;
-  password: string;
-  maxConn?: number;
-}
+import { DatabaseOptionsBase } from '../DatabaseOptions';
+
+export interface PostgresOptions extends DatabaseOptionsBase {}

@@ -20,6 +20,18 @@ export class PostgresClient extends DatabaseClient {
     };
   }
 
+  async BeginTransaction(): Promise<void> {
+    await this.ExecuteAsync('BEGIN');
+  }
+
+  async Rollback(): Promise<void> {
+    await this.ExecuteAsync('ROLLBACK');
+  }
+
+  async Commit(): Promise<void> {
+    await this.ExecuteAsync('COMMIT');
+  }
+
   Dispose(): void {
     if (this._client) {
       try {
