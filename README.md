@@ -18,11 +18,11 @@
 
 8.Jwt 验证(日程中)
 
-9.DatabaseProvider(目前已支持`postgres`,下一个支持的是`mysql`)
+9.DatabaseProvider(支持`postgres`,`mysql`)
 
 10.定时任务(日程中)
 
-# 启动
+#### 启动
 
 ```
 yarn init  # 初始化项目
@@ -30,9 +30,9 @@ yarn add simple-koa # 添加框架引用
 yarn add nodemon typescript ts-node --dev # 添加运行调试所需
 ```
 
-新建一个文件夹 `src`，在`src`文件夹中新建项目入口`App.ts` 
+新建一个文件夹 `src`，在`src`文件夹中新建项目入口`App.ts`
 
-**注意，启动文件必须放在src文件夹下，否则会程序出现起不来的问题**
+**注意，启动文件必须放在 src 文件夹下，否则会程序出现起不来的问题**
 
 ```
 // App.ts
@@ -241,8 +241,15 @@ export class QueueTestService extends Service implements IQueueTestService {
 
 #### 数据库操作
 
-目前支持`postgres`，下一个支持`mysql`,未来还将支持`mssql`,`mongo`,`cassandra`
+目前支持`postgres`，`mysql`,未来还将支持`mongo`,`cassandra`
+
 支持连接池，支持事务，支持多种数据库，支持同时连接多个数据库，暂无分布式锁，分布式事务的支持想法
+
+**目前 MYSQL8+的数据库需要执行如下脚本才行**
+
+```
+alter user root@'%' identified with mysql_native_password by "123456";
+```
 
 ##### 配置文件
 
