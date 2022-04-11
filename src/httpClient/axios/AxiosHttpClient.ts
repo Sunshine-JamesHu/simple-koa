@@ -1,9 +1,12 @@
 import qs from 'qs';
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosError } from 'axios';
-import { HttpClientBase, HttpClientResult, RequestOptions } from '../HttpClient';
+import { HttpClientBase, HttpClientResult, RequestOptions, INJECT_TOKEN } from '../HttpClient';
+import { Singleton } from '../../di/Dependency';
+import { SimpleKoaError } from '../../error/SimpleKoaError';
 
 const arrayBufferReg = /protobuf|msgpack/i;
 
+@Singleton(INJECT_TOKEN)
 export class AxiosHttpClient extends HttpClientBase {
   constructor() {
     super();
@@ -11,14 +14,38 @@ export class AxiosHttpClient extends HttpClientBase {
 
   async Send<TResult = any>(config: RequestOptions): Promise<HttpClientResult<TResult>> {
     const result: HttpClientResult<TResult> = { status: 204 };
+
     try {
       const httpRes = await axios.request(this.GetOptions(config));
       if (httpRes) {
-        httpRes.data = httpRes.data;
+        result.data = httpRes.data;
       }
     } catch (error: any) {
-      result.error = error;
+      // 库内抛出的错误太多了,不是很好找问题,抛出一个简单的
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<any, any>;
+        const simpleErrData = {
+          config: {
+            url: axiosError.config.url,
+            method: axiosError.config.method,
+            headers: JSON.stringify(axiosError.config.headers),
+            params: JSON.stringify(axiosError.config.params),
+            data: JSON.stringify(axiosError.config.data),
+            responseType: axiosError.config.responseType,
+            timeout: axiosError.config.timeout,
+          },
+          response: {
+            status: axiosError.response?.status,
+            statusText: axiosError.response?.statusText,
+            headers: JSON.stringify(axiosError.response?.headers),
+            data: axiosError.response?.data,
+          },
+        };
+        throw new SimpleKoaError(axiosError.message, simpleErrData);
+      }
+      throw error;
     }
+
     return result;
   }
 
@@ -51,11 +78,17 @@ export class AxiosHttpClient extends HttpClientBase {
     }
 
     return {
-      headers,
+      url: config.url,
+      method: config.method,
+
       params: config.params,
       data: config.data,
+
+      headers: headers,
+
       timeout: config.timeout,
       timeoutErrorMessage: config.timeoutErrorMessage,
+
       responseType: config.responseType,
       withCredentials: true,
       paramsSerializer: (params) => {

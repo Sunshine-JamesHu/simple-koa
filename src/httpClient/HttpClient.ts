@@ -3,7 +3,6 @@ export const INJECT_TOKEN = 'Sys:IHttpClient';
 export interface HttpClientResult<TResult = any> {
   status: number;
   data?: TResult;
-  error?: Error;
 }
 
 export type ResponseType = 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream';
