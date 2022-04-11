@@ -14,7 +14,7 @@
 
 6.QueueManager 支持 MQTT 与 Kafka
 
-7.HttpClient(日程中)
+7.HttpClient 使用 Axios 作为底层支持
 
 8.Jwt 验证(日程中)
 
