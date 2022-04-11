@@ -2,7 +2,7 @@ import log4js from 'log4js';
 import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from '../../src/setting/SettingManager';
 import { Singleton, Container } from '../../src/di/Dependency';
 
-export const INJECT_TOKEN = 'ILogger';
+export const INJECT_TOKEN = 'Sys:ILogger';
 
 declare type LoggerLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal';
 
