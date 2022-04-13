@@ -3,7 +3,7 @@ import { ModuleContainer } from '../di/ModuleContainer';
 import { IEventBus, INJECT_TOKEN as EventBus_INJECT_TOKEN } from './EventBus';
 
 const METADATA_TOKEN = 'Sys:EventKey';
-export const INJECT_TOKEN = 'IEventHandler';
+export const INJECT_TOKEN = 'Sys:IEventHandler';
 
 export interface IEventData<TData = any> {
   ext: any;

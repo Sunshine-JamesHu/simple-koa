@@ -4,11 +4,28 @@ import { Container, Inject, Injectable } from '../di/Dependency';
 import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 import { EventHandler, IEventHandler } from './EventHandler';
 
-export const INJECT_TOKEN = 'IEventBus';
+export const INJECT_TOKEN = 'Sys:IEventBus';
 
 export interface IEventBus {
+  /**
+   * 发布事件
+   * @param key 事件key
+   * @param data 数据
+   */
   Publish(key: string, data: any): void;
+
+  /**
+   * 监听事件
+   * @param key 事件Key
+   * @param handlerToken 处理器Token / 回调函数
+   */
   Subscribe(key: string, handlerToken: string | Function): void;
+
+  /**
+   * 取消订阅
+   * @param key 事件Key
+   */
+  UnSubscribe(key: string): void;
 }
 
 @Singleton(INJECT_TOKEN)
@@ -33,6 +50,12 @@ export class EventBus extends EventEmitter implements IEventBus {
       } catch (error: any) {
         this.Logger.LogError('执行事件出错', error);
       }
+    });
+  }
+
+  UnSubscribe(key: string) {
+    this.off(key, () => {
+      this.Logger.LogDebug(`UnSubscribe ${key}`);
     });
   }
 }
