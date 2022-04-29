@@ -7,6 +7,7 @@ import { ITestService } from '../service/TestService';
 import { IQueueTestService } from '../service/QueueTestService';
 import { AsyncDisposableTest, DisposableTest } from '../disposableTest/DisposableTest';
 import { UsingAsync } from '../../src/core/Disposable';
+import { UserFriendlyError } from '../../src/error/UserFriendlyError';
 
 export interface ITestController {
   GetTest(data: { name: string }): string;
@@ -34,7 +35,17 @@ export default class TestController extends Controller implements ITestControlle
 
   @HttpPost()
   GlobalErrorTest(): void {
+    throw new UserFriendlyError('主动抛出错误', { code: '1132', detail: { name: 'pay', age: 18, sex: 0 } });
+  }
+
+  @HttpPost()
+  GlobalErrorTest2(): void {
     throw new Error('主动抛出错误');
+  }
+
+  @HttpPost()
+  GlobalErrorTest3(): void {
+    throw new UserFriendlyError('主动抛出501错误', undefined, 501);
   }
 
   @HttpGet()

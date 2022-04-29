@@ -18,6 +18,8 @@ import { IQueueManager } from './src/queue/QueueManager';
 import { IQueueManagerFactory, INJECT_TOKEN as QMF_INJECT_TOKEN } from './src/queue/QueueManagerFactory';
 
 import Program from './src/Program'; // 注意：这一句必须放在最后面,否则打出来的包就会有问题
+import { SimpleKoaError } from './src/error/SimpleKoaError';
+import { UserFriendlyError } from './src/error/UserFriendlyError';
 
 export {
   Container,
@@ -63,6 +65,8 @@ export {
   IDatabaseProvider,
   DBP_INJECT_TOKEN,
   GetDatabaseProviderToken,
+  SimpleKoaError,
+  UserFriendlyError,
 };
 
 export default Program;

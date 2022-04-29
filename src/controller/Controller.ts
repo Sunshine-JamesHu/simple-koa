@@ -20,7 +20,7 @@ export abstract class Controller implements IController {
     this._context = ctx;
   }
 
-  protected Context(): Context {
+  protected get Context(): Context {
     return this._context as Context;
   }
 
