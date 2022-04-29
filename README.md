@@ -36,6 +36,7 @@ yarn add nodemon typescript ts-node --dev # 添加运行调试所需
 
 ```
 // App.ts
+import 'reflect-metadata'; // 这一句必须要加
 import Program from 'simple-koa';
 
 const program = new Program(__dirname);
