@@ -22,23 +22,23 @@ export interface ITestController {
 
 @Transient()
 @Injectable()
-@Router()
+@Router({ desc: '测试路由' })
 export default class TestController extends Controller implements ITestController {
   constructor(@Inject('ITestService') private testService: ITestService, @Inject('IQueueTestService') private queueTestService: IQueueTestService) {
     super();
   }
 
-  @HttpPost()
+  @HttpPost({ desc: '管道发布测试' })
   async QueuePubTest(@RequestBody() data: any): Promise<void> {
     this.queueTestService.PublishAsync(data);
   }
 
-  @HttpPost()
+  @HttpPost({ desc: '主动抛出前端可捕获错误' })
   GlobalErrorTest(): void {
     throw new UserFriendlyError('主动抛出错误', { code: '1132', detail: { name: 'pay', age: 18, sex: 0 } });
   }
 
-  @HttpPost()
+  @HttpPost({ desc: '主动抛出错误' })
   GlobalErrorTest2(): void {
     throw new Error('主动抛出错误');
   }

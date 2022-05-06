@@ -2,11 +2,11 @@ import { Context } from 'koa';
 import { Container } from '../di/Dependency';
 import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 
-export const METADATA_TOKEN = 'Sys:Controller';
+export const CONTROLLER_METADATA = 'Metadata:Controller';
 
 export interface IController {}
 
-@Reflect.metadata(METADATA_TOKEN, true)
+@Reflect.metadata(CONTROLLER_METADATA, true)
 export abstract class Controller implements IController {
   private _context: Context | undefined;
   private readonly _logger: ILogger;
@@ -30,7 +30,7 @@ export abstract class Controller implements IController {
 }
 
 export function IsController(target: Function) {
-  return Reflect.getMetadata(METADATA_TOKEN, target);
+  return Reflect.getMetadata(CONTROLLER_METADATA, target);
 }
 
 export function GetControllerName(controller: Function): string {

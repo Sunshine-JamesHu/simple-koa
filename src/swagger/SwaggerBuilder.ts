@@ -9,7 +9,7 @@ import { Inject, Injectable, Singleton } from '../di/Dependency';
 import { ModuleContainer } from '../di/ModuleContainer';
 import { GetActionInfo, GetHttpMethodStr } from '../router/Request';
 import { GetActionParamsMetadata } from '../router/RequestData';
-import { GetRouterPath } from '../router/Router';
+import { GetRouterInfo, GetRouterPath } from '../router/Router';
 import { ISettingManager, INJECT_TOKEN as SETTING_INJECT_TOKEN } from '../setting/SettingManager';
 
 export const INJECT_TOKEN = 'ISwaggerBuilder';
@@ -89,7 +89,7 @@ export class SwaggerBuilder implements ISwaggerBuilder {
     const swagger = this.GenSwaggerJson();
 
     app.use(koaStatic(join(__dirname, 'koa2-swagger-ui')));
-    
+
     router.register('/swagger.json', ['get'], (ctx) => {
       ctx.set('Content-Type', 'application/json');
       ctx.body = swagger;
@@ -120,7 +120,8 @@ export class SwaggerBuilder implements ISwaggerBuilder {
     } = {};
 
     controllers.forEach((controller) => {
-      const routerPath = GetRouterPath(controller);
+      const routerInfo = GetRouterInfo(controller);
+      const routerPath = routerInfo?.path;
       if (!IsController(controller) || !routerPath) {
         return;
       }
@@ -128,7 +129,7 @@ export class SwaggerBuilder implements ISwaggerBuilder {
       const tag = GetControllerName(controller);
       tags.push({
         name: tag,
-        description: tag,
+        description: routerInfo.desc,
       });
 
       const propKeys = Object.getOwnPropertyNames(controller.prototype);
@@ -167,9 +168,12 @@ export class SwaggerBuilder implements ISwaggerBuilder {
             }
           });
         }
-        const tmp: any = {};
-        tmp[GetHttpMethodStr(actionInfo.httpMethod)] = new SwaggerPath(tag, parameters);
-        paths[fullPath] = tmp;
+        const swaggerPath = new SwaggerPath(tag, parameters);
+        if (actionInfo.desc) {
+          swaggerPath.summary = actionInfo.desc;
+        }
+
+        paths[fullPath] = { [GetHttpMethodStr(actionInfo.httpMethod)]: swaggerPath };
       });
     });
 

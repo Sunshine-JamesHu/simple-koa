@@ -6,43 +6,57 @@ export enum HttpMethod {
   OPTIONS = 4,
 }
 
-const ACTION_INFO_METADATA = 'Sys:ActionInfo';
+const METADATA_ACTION_INFO = 'Metadata:ActionInfo';
 
 export interface ActionInfo {
+  name?: string;
+  desc?: string;
+}
+
+export interface FullActionInfo extends ActionInfo {
   httpMethod: HttpMethod;
   name: string;
-  returnType: any;
 }
 
-export function HttpGet(actionName?: string) {
-  return HttpRequest(HttpMethod.GET, actionName);
+export function HttpGet(data?: string | ActionInfo) {
+  return HttpRequest(HttpMethod.GET, data);
 }
 
-export function HttpPost(actionName?: string) {
-  return HttpRequest(HttpMethod.POST, actionName);
+export function HttpPost(data?: string | ActionInfo) {
+  return HttpRequest(HttpMethod.POST, data);
 }
 
-export function HttpPut(actionName?: string) {
-  return HttpRequest(HttpMethod.PUT, actionName);
+export function HttpPut(data?: string | ActionInfo) {
+  return HttpRequest(HttpMethod.PUT, data);
 }
 
-export function HttpDelete(actionName?: string) {
-  return HttpRequest(HttpMethod.DELETE, actionName);
+export function HttpDelete(data?: string | ActionInfo) {
+  return HttpRequest(HttpMethod.DELETE, data);
 }
 
-export function HttpOptions(actionName?: string) {
-  return HttpRequest(HttpMethod.OPTIONS, actionName);
+export function HttpOptions(data?: string | ActionInfo) {
+  return HttpRequest(HttpMethod.OPTIONS, data);
 }
 
-export function HttpRequest(httpMethod: HttpMethod, actionName?: string) {
+export function HttpRequest(httpMethod: HttpMethod, data?: string | ActionInfo) {
   return (target: any, key: string, descriptor: PropertyDescriptor) => {
-    if (!actionName) actionName = key;
-    const actionInfo: ActionInfo = {
+    let actionName = key;
+    let desc: string | undefined = undefined;
+    if (data) {
+      if (typeof data === 'string') actionName = data;
+      else {
+        if (data.name) actionName = data.name;
+        if (data.desc) desc = data.desc;
+      }
+    }
+
+    if (!data) data = key;
+    const actionInfo: FullActionInfo = {
       name: GetActionName(actionName),
       httpMethod: httpMethod,
-      returnType: Reflect.getMetadata('design:returntype', target, key),
+      desc: desc,
     };
-    Reflect.defineMetadata(ACTION_INFO_METADATA, actionInfo, descriptor.value);
+    SetActionInfo(descriptor.value, actionInfo);
   };
 }
 
@@ -68,12 +82,17 @@ export function GetHttpMethodStr(httpMethod: HttpMethod): string {
   return methodStr;
 }
 
+export function GetActionInfo(action: Function): FullActionInfo {
+  return Reflect.getMetadata(METADATA_ACTION_INFO, action);
+}
+
 function GetActionName(actionName: string): string {
   actionName = `${actionName[0].toLowerCase()}${actionName.substring(1, actionName.length)}`;
   // if (actionName.endsWith('Async')) actionName = actionName.replace('Async', ''); // TODO:是否需要加上?????
   return actionName;
 }
 
-export function GetActionInfo(action: Function): ActionInfo {
-  return Reflect.getMetadata(ACTION_INFO_METADATA, action);
+function SetActionInfo(target: Object, actionInfo: FullActionInfo) {
+  // Reflect.defineMetadata(METADATA_ACTION_INFO, actionInfo, descriptor.value);
+  Reflect.defineMetadata(METADATA_ACTION_INFO, actionInfo, target);
 }

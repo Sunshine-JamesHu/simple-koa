@@ -1,4 +1,4 @@
-const ACTION_PARAMS_METADATA = 'Sys:ActionParams';
+const METADATA_ACTION_PARAMS = 'Metadata:ActionParams';
 
 export enum RequestParamType {
   Body = 0,
@@ -17,7 +17,7 @@ export function RequestQuery(paramName?: string) {
     const paramTypes = Reflect.getMetadata('design:paramtypes', target, key);
     const params = GetActionParamsMetadata(target[key]);
     params.unshift({ in: 'query', key: paramName, index: index, type: paramTypes[index] });
-    Reflect.defineMetadata(ACTION_PARAMS_METADATA, params, target[key]);
+    Reflect.defineMetadata(METADATA_ACTION_PARAMS, params, target[key]);
   };
 }
 
@@ -26,10 +26,10 @@ export function RequestBody() {
     const paramTypes = Reflect.getMetadata('design:paramtypes', target, key);
     const params = GetActionParamsMetadata(target[key]);
     params.push({ in: 'body', index: index, type: paramTypes[index] });
-    Reflect.defineMetadata(ACTION_PARAMS_METADATA, params, target[key]);
+    Reflect.defineMetadata(METADATA_ACTION_PARAMS, params, target[key]);
   };
 }
 
 export function GetActionParamsMetadata(target: any): Array<ActionParams> {
-  return Reflect.getMetadata(ACTION_PARAMS_METADATA, target) || [];
+  return Reflect.getMetadata(METADATA_ACTION_PARAMS, target) || [];
 }
