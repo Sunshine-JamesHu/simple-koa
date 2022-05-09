@@ -1,18 +1,13 @@
 import { Controller } from '../../src/controller/Controller';
 import { Inject, Injectable, Transient } from '../../src/di/Dependency';
-import { HttpDelete, HttpGet, HttpPut, HttpPost } from '../../src/router/Request';
+import { HttpDelete, HttpGet, HttpPost } from '../../src/router/Request';
 import { RequestBody, RequestQuery } from '../../src/router/RequestData';
 import { Router } from '../../src/router/Router';
-import { ITestService } from '../service/TestService';
-import { IQueueTestService } from '../service/QueueTestService';
-import { AsyncDisposableTest, DisposableTest } from '../disposableTest/DisposableTest';
-import { UsingAsync } from '../../src/core/Disposable';
-import { UserFriendlyError } from '../../src/error/UserFriendlyError';
 import { IMemoryCache, MEMORY_INJECT_TOKEN } from '../../src/cache/Cache';
 
 @Transient()
 @Injectable()
-@Router({ desc: '测试路由' })
+@Router({ desc: '缓存测试' })
 export default class CacheController extends Controller {
   constructor(@Inject(MEMORY_INJECT_TOKEN) private memoryCache: IMemoryCache) {
     super();

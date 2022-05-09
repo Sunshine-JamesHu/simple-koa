@@ -4,23 +4,32 @@
 
 # 功能
 
-1.简单且易于使用的 Controller 和 Router
+- 简单且易于使用的 Controller 和 Router
 
-2.强大的依赖注入，支持依赖反转，接口注入等
+- 强大的依赖注入，支持依赖反转，接口注入等
 
-4.Swagger 文档
+- 无须配置的 Swagger 文档
 
-5.日志管理
+- 简单易用的日志组件
 
-6.QueueManager 支持 MQTT 与 Kafka
+- QueueManager 管道处理器 (支持`kafka`,`mqtt`)
 
-7.HttpClient 使用 Axios 作为底层支持
+- HttpClient 简单易用的 HttpClient
 
-8.Jwt 验证(日程中)
+- Cache (支持 MemoryCache, Redis)
 
-9.DatabaseProvider(支持`postgres`,`mysql`)
+- Jwt 验证(日程中)
 
-10.定时任务(日程中)
+- DatabaseProvider 数据库查询器 (支持`postgres`,`mysql`)
+
+  - 支持连接池
+  - 支持事务 (暂不支持分布式事务)
+  - 支持断线重连
+  - 支持多库
+  - 提供仓储支持 (日程中)
+  - 提供轻量级 ORM (日程中)
+
+- 定时任务(日程中)
 
 #### 启动
 
@@ -314,4 +323,64 @@ export class PostgresTestService extends Service implements IPostgresTestService
     });
   }
 }
+```
+
+#### 缓存操作
+
+##### 抽象定义
+
+```
+export interface ICache {
+  Get<TCache = any>(key: string): TCache;
+  GetAsync<TCache = any>(key: string): Promise<TCache>;
+
+  Set<TCache = any>(key: string, data: TCache, options?: ICacheEntryOptions): void;
+  SetAsync<TCache = any>(key: string, data: TCache, options?: ICacheEntryOptions): Promise<void>;
+
+  Remove(key: string): void;
+  RemoveAsync(key: string): Promise<void>;
+
+  GetOrAdd<TCache = any>(key: string, func: () => TCache, options?: ICacheEntryOptions): TCache;
+  GetOrAddAsync<TCache = any>(key: string, func: () => Promise<TCache> | TCache, options?: ICacheEntryOptions): Promise<TCache>;
+}
+
+```
+
+##### 使用例子
+
+```
+import { Controller } from '../../src/controller/Controller';
+import { Inject, Injectable, Transient } from '../../src/di/Dependency';
+import { HttpDelete, HttpGet, HttpPost } from '../../src/router/Request';
+import { RequestBody, RequestQuery } from '../../src/router/RequestData';
+import { Router } from '../../src/router/Router';
+import { IMemoryCache, MEMORY_INJECT_TOKEN } from '../../src/cache/Cache';
+
+@Transient()
+@Injectable()
+@Router({ desc: '缓存测试' })
+export default class CacheController extends Controller {
+  constructor(@Inject(MEMORY_INJECT_TOKEN) private memoryCache: IMemoryCache) {
+    super();
+  }
+
+  @HttpGet()
+  MGet(@RequestQuery('key') key: string) {
+    return this.memoryCache.GetAsync(key);
+  }
+
+  @HttpPost()
+  async MPost(@RequestBody() data: { key: string; val: any; ttl: number; sliding: boolean }[]) {
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+      await this.memoryCache.SetAsync(element.key, element.val, { ttl: element.ttl ?? 5000, sliding: element.sliding });
+    }
+  }
+
+  @HttpDelete()
+  MDel(@RequestQuery('key') key: string) {
+    return this.memoryCache.Remove(key);
+  }
+}
+
 ```
