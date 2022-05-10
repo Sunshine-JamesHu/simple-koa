@@ -19,12 +19,14 @@ export interface ICache {
   GetOrAddAsync<TCache = any>(key: string, func: () => Promise<TCache> | TCache, options?: ICacheEntryOptions): Promise<TCache>;
 }
 
-export abstract class Cache implements ICache {
+export abstract class CacheBase implements ICache {
   private readonly _logger: ILogger;
   private readonly _settingManager: ISettingManager;
+  private readonly _slidingMap: Map<string, number>;
   constructor() {
     this._logger = Container.resolve<ILogger>(Logger_INJECT_TOKEN);
     this._settingManager = Container.resolve<ISettingManager>(Setting_INJECT_TOKEN);
+    this._slidingMap = new Map<string, number>();
   }
 
   protected get Logger() {
@@ -33,6 +35,10 @@ export abstract class Cache implements ICache {
 
   protected get SettingManager() {
     return this._settingManager;
+  }
+
+  protected get SlidingMap() {
+    return this._slidingMap;
   }
 
   abstract Get<TCache = any>(key: string): TCache;
@@ -83,6 +89,22 @@ export abstract class Cache implements ICache {
     }
 
     return cacheData;
+  }
+
+  protected IsSlidingCache(key: string) {
+    return !!this._slidingMap[key];
+  }
+
+  protected AddSlidingCache(key: string, ttl: number) {
+    this.SlidingMap[key] = ttl;
+  }
+
+  protected RemoveSlidingCache(key: string) {
+    this.SlidingMap.delete(key);
+  }
+
+  protected GetSlidingTTL(key: string): number | undefined {
+    return this.SlidingMap[key];
   }
 }
 

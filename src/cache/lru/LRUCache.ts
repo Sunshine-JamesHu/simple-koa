@@ -1,13 +1,13 @@
-import { Injectable, Singleton } from '../../di/Dependency';
-import { Cache, IMemoryCache, MEMORY_INJECT_TOKEN } from '../Cache';
-import { ICacheEntryOptions } from '../CacheEntryOptions';
 import LRUCacheDrive from 'lru-cache';
+
+import { Injectable, Singleton } from '../../di/Dependency';
+import { CacheBase, IMemoryCache, MEMORY_INJECT_TOKEN } from '../Cache';
+import { ICacheEntryOptions } from '../CacheEntryOptions';
 import { LRUOptions } from './LRUOptions';
 
 @Singleton(MEMORY_INJECT_TOKEN)
 @Injectable()
-export class LRUCache extends Cache implements IMemoryCache {
-  private readonly _slidingMap;
+export class LRUCache extends CacheBase implements IMemoryCache {
   private readonly _cacheIns: LRUCacheDrive<string, any>;
   public get CacheIns(): LRUCacheDrive<string, any> {
     return this._cacheIns;
@@ -15,7 +15,6 @@ export class LRUCache extends Cache implements IMemoryCache {
 
   constructor() {
     super();
-    this._slidingMap = new Map<string, boolean>();
     this._cacheIns = this.GenCacheIns();
   }
 
@@ -38,12 +37,12 @@ export class LRUCache extends Cache implements IMemoryCache {
 
   Set<TCache = any>(key: string, data: TCache, options?: ICacheEntryOptions): void {
     let opt: LRUCacheDrive.SetOptions<string, any> | undefined = undefined;
-    this._slidingMap.delete(key);
+    this.RemoveSlidingCache(key);
     if (options && options.ttl) {
       opt = { ttl: options.ttl, noUpdateTTL: false };
       if (options.sliding) {
         // 定义这是一个滑动过期的缓存
-        this._slidingMap[key] = true;
+        this.AddSlidingCache(key, options.ttl);
       }
     }
     this.CacheIns.set(key, data, opt);
@@ -76,7 +75,7 @@ export class LRUCache extends Cache implements IMemoryCache {
   }
 
   private GetOptions(): LRUOptions {
-    let setting = this.SettingManager.GetConfig<LRUOptions>('lur');
+    let setting = this.SettingManager.GetConfig<LRUOptions>('lru');
     if (!setting) {
       setting = {
         max: 5000,
@@ -92,8 +91,8 @@ export class LRUCache extends Cache implements IMemoryCache {
     return new LRUCacheDrive<string, any>({
       ...cacheOpt,
       noUpdateTTL: false,
-      sizeCalculation: this.SizeCalculation,
-      dispose: this.DisposeCacheItem,
+      sizeCalculation: (val: any, key: string) => this.SizeCalculation(val, key),
+      dispose: (val: any, key: string) => this.DisposeCacheItem(val, key),
     } as LRUCacheDrive.Options<string, any>);
   }
 
@@ -104,11 +103,7 @@ export class LRUCache extends Cache implements IMemoryCache {
     return Buffer.from(JSON.stringify(value), 'utf-8').byteLength;
   }
 
-  private IsSlidingCache(key: string): boolean {
-    return !!this._slidingMap[key];
-  }
-
   private DisposeCacheItem(value: any, key: string) {
-    this._slidingMap.delete(key);
+    this.RemoveSlidingCache(key);
   }
 }
