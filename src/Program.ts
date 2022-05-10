@@ -233,11 +233,20 @@ export default class Program {
   public Start() {
     const app = this.GetApp();
     const port = this.GetPortSetting();
+    const logger = Container.resolve<ILogger>(Logger_INJECT_TOKEN);
     app.listen(port, () => {
-      const Logger = Container.resolve<ILogger>(Logger_INJECT_TOKEN);
-      Logger.LogInfo(`Server running on port ${port}`);
+      logger.LogInfo(`Server running on port ${port}`);
       this.OnServerStarted();
     });
+
+    process.on('uncaughtException', (err: any) => {
+      logger.LogFatal('An uncapped exception occurred', err);
+    });
+
+    process.on('unhandledRejection', (err: any, promise: Promise<any>) => {
+      logger.LogFatal('An uncapped exception occurred from promise', err);
+    });
+
     process.on('SIGINT', () => {
       this.OnApplicationShutdown();
       process.exit(0);
