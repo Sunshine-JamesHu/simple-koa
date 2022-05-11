@@ -21,7 +21,7 @@ export interface IDatabaseProvider {
    * @param sql sql
    * @param args 参数
    */
-  ExecuteAsync<TResult = any>(sql: string, ...args: Array<string | number | boolean>): Promise<ExecuteResult<TResult>>;
+  ExecuteAsync<TResult = any>(sql: string, ...args: any): Promise<ExecuteResult<TResult>>;
 
   /**
    * 使用事务
@@ -36,7 +36,7 @@ export abstract class DatabaseProvider implements IDatabaseProvider {
     this.Logger = Container.resolve<ILogger>(Logger_INJECT_TOKEN);
   }
 
-  abstract ExecuteAsync<TResult = any>(sql: string, ...args: Array<string | number | boolean>): Promise<ExecuteResult<TResult>>;
+  abstract ExecuteAsync<TResult = any>(sql: string, ...args: any): Promise<ExecuteResult<TResult>>;
 
   abstract UseTransaction<TResult = void>(fn: (client: IDatabaseClient) => Promise<TResult>): Promise<TResult>;
 }

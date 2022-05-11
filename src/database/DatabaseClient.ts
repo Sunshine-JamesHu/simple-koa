@@ -28,7 +28,7 @@ export interface IDatabaseClient extends IDisposable {
    * @param sql SQL
    * @param args SQL参数
    */
-  ExecuteAsync<TResult = any>(sql: string, ...args: Array<string | number | boolean>): Promise<ExecuteResult<TResult>>;
+  ExecuteAsync<TResult = any>(sql: string, ...args: Array<any>): Promise<ExecuteResult<TResult>>;
 }
 
 export abstract class DatabaseClient implements IDatabaseClient {
@@ -43,7 +43,7 @@ export abstract class DatabaseClient implements IDatabaseClient {
 
   abstract Commit(): Promise<void>;
 
-  abstract ExecuteAsync<TResult = any>(sql: string, ...args: Array<string | number | boolean>): Promise<ExecuteResult<TResult>>;
+  abstract ExecuteAsync<TResult = any>(sql: string, ...args: Array<any>): Promise<ExecuteResult<TResult>>;
 
   abstract Dispose(): void;
 }

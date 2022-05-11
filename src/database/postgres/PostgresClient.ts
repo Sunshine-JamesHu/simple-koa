@@ -12,7 +12,7 @@ export class PostgresClient extends DatabaseClient {
     this._client = client;
   }
 
-  async ExecuteAsync<TResult = any>(sql: string, ...args: Array<string | number | boolean>): Promise<ExecuteResult<TResult>> {
+  async ExecuteAsync<TResult = any>(sql: string, ...args: any): Promise<ExecuteResult<TResult>> {
     const execRes = await this.Client.query<TResult>(sql, args);
     return {
       rowCount: execRes.rowCount,

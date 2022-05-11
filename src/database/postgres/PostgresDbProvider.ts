@@ -34,7 +34,7 @@ export class PostgresDbProvider extends DatabaseProvider {
     });
   }
 
-  async ExecuteAsync<TResult = any>(sql: string, ...args: Array<string | number | boolean>): Promise<ExecuteResult<TResult>> {
+  async ExecuteAsync<TResult = any>(sql: string, ...args: any): Promise<ExecuteResult<TResult>> {
     const client = await this.GetClientAsync();
     const result = await UsingAsync(client, async () => {
       const execRes = await client.ExecuteAsync(sql, ...args);
