@@ -1,12 +1,12 @@
 import qs from 'qs';
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosError } from 'axios';
-import { HttpClientBase, HttpClientResult, RequestOptions, INJECT_TOKEN } from '../HttpClient';
+import { HttpClientBase, HttpClientResult, RequestOptions, HTTPCLIENT_INJECT_TOKEN } from '../HttpClient';
 import { Singleton } from '../../di/Dependency';
 import { SimpleKoaError } from '../../error/SimpleKoaError';
 
 const arrayBufferReg = /protobuf|msgpack/i;
 
-@Singleton(INJECT_TOKEN)
+@Singleton(HTTPCLIENT_INJECT_TOKEN)
 export class AxiosHttpClient extends HttpClientBase {
   constructor() {
     super();

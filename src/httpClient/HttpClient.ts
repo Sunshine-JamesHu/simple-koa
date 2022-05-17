@@ -1,4 +1,4 @@
-export const INJECT_TOKEN = 'Sys:IHttpClient';
+export const HTTPCLIENT_INJECT_TOKEN = 'Sys:IHttpClient';
 
 export interface HttpClientResult<TResult = any> {
   status: number;

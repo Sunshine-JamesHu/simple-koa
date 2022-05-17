@@ -4,7 +4,7 @@ import { Inject, Injectable, Transient } from '../../src/di/Dependency';
 import { HttpGet, HttpPost } from '../../src/router/Request';
 import { RequestBody, RequestQuery } from '../../src/router/RequestData';
 import { Router } from '../../src/router/Router';
-import { IHttpClient, INJECT_TOKEN as HTTP_INJECT_TOKEN } from '../../src/httpClient/HttpClient';
+import { IHttpClient, HTTPCLIENT_INJECT_TOKEN as HTTP_INJECT_TOKEN } from '../../src/httpClient/HttpClient';
 
 export interface IHttpTestController {
   GetUserName(id: number): Promise<string>;
