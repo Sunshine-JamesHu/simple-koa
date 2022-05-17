@@ -1,9 +1,9 @@
 import { Transient, Singleton, Injectable, Inject, GetInjectInfo, Container, Scoped, ReplaceService, AllowMultiple } from './src/di/Dependency';
 import { ArrayHelper } from './src/core/ArrayHelper';
-import { ILogger, Logger } from './src/logger/Logger';
+import { ILogger, Logger, LOGGER_INJECT_TOKEN } from './src/logger/Logger';
 import { IEventBus, EventBus } from './src/event/EventBus';
 import { EventHandler, EventKey, IEventHandler, IEventData, GetEventKey } from './src/event/EventHandler';
-import { ISettingManager, SettingManager } from './src/setting/SettingManager';
+import { ISettingManager, SettingManager, SETTING_INJECT_TOKEN } from './src/setting/SettingManager';
 import { Router } from './src/router/Router';
 import { RequestBody, RequestQuery } from './src/router/RequestData';
 import { HttpRequest, HttpGet, HttpDelete, HttpPut, HttpOptions, HttpPost } from './src/router/Request';
@@ -36,6 +36,7 @@ export {
   AllowMultiple,
   ILogger,
   Logger,
+  LOGGER_INJECT_TOKEN,
   IEventBus,
   EventBus,
   EventKey,
@@ -47,6 +48,7 @@ export {
   Controller,
   IService,
   Service,
+  SETTING_INJECT_TOKEN,
   ISettingManager,
   SettingManager,
   IQueueManager,

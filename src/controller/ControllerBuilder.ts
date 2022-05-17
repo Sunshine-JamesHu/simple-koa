@@ -5,12 +5,12 @@ import Koa, { Context, Next } from 'koa';
 import { container } from 'tsyringe';
 import { ModuleContainer } from '../di/ModuleContainer';
 import { IController, IsController } from './Controller';
-import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from '../setting/SettingManager';
+import { ISettingManager, SETTING_INJECT_TOKEN as Setting_INJECT_TOKEN } from '../setting/SettingManager';
 import { Inject, Injectable, Singleton } from '../di/Dependency';
 import { GetActionParamsMetadata } from '../router/RequestData';
 import { GetRouterPath } from '../router/Router';
 import { GetActionInfo, GetHttpMethodStr } from '../router/Request';
-import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
+import { ILogger, LOGGER_INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 
 export const INJECT_TOKEN = 'IControllerBuilder';
 

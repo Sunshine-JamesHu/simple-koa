@@ -1,9 +1,9 @@
 import { SimpleKoaError } from '../error/SimpleKoaError';
 import { Common } from '../core/Common';
 import { ICacheEntryOptions } from './CacheEntryOptions';
-import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
+import { ILogger, LOGGER_INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 import { Container } from '../di/Dependency';
-import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from '../setting/SettingManager';
+import { ISettingManager, SETTING_INJECT_TOKEN as Setting_INJECT_TOKEN } from '../setting/SettingManager';
 
 export interface ICache {
   Get<TCache = any>(key: string): TCache;

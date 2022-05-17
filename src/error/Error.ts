@@ -1,6 +1,6 @@
 import Koa, { Context, Next } from 'koa';
 import { container } from 'tsyringe';
-import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
+import { ILogger, LOGGER_INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 import { UserFriendlyError } from './UserFriendlyError';
 
 export function InitGlobalError(app: Koa) {

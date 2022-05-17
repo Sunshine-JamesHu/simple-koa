@@ -1,8 +1,8 @@
 import { Container } from '../di/Dependency';
 import { ModuleContainer } from '../di/ModuleContainer';
 
-import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
-import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from '../setting/SettingManager';
+import { ILogger, LOGGER_INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
+import { ISettingManager, SETTING_INJECT_TOKEN as Setting_INJECT_TOKEN } from '../setting/SettingManager';
 
 import { GetDatabaseType, IsDatabase } from './Database';
 import { ExecuteResult, IDatabaseClient } from './DatabaseClient';

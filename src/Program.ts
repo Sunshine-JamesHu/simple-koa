@@ -7,9 +7,9 @@ import { InitSettingManager } from './setting/SettingManager';
 import { ModuleLoader, IModuleLoader } from './di/ModuleLoader';
 import { INJECT_TOKEN as ControllerBuilder_INJECT_TOKEN, IControllerBuilder } from './controller/ControllerBuilder';
 
-import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from './setting/SettingManager';
+import { ISettingManager, SETTING_INJECT_TOKEN as Setting_INJECT_TOKEN } from './setting/SettingManager';
 import { ISwaggerBuilder, INJECT_TOKEN as SwaggerBuilder_INJECT_TOKEN } from './swagger/SwaggerBuilder';
-import { ILogger, InitLogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from './logger/Logger';
+import { ILogger, InitLogger, LOGGER_INJECT_TOKEN as Logger_INJECT_TOKEN } from './logger/Logger';
 import { InitGlobalError } from './error/Error';
 import { CorsOptions, AddCors } from './cors/Cors';
 import { RegisterQueues, StartQueues, StopQueues } from './queue/QueueManager';

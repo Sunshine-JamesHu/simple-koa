@@ -2,7 +2,7 @@ import { IRunnable } from '../core/Runnable';
 import { Container } from '../di/Dependency';
 import { IEventBus, INJECT_TOKEN as EventBus_INJECT_TOKEN } from '../event/EventBus';
 import { IEventData } from '../event/EventHandler';
-import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
+import { ILogger, LOGGER_INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 
 export interface ISubscriber extends IRunnable {
   /**

@@ -1,5 +1,5 @@
 import { container } from 'tsyringe';
-import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from '../setting/SettingManager';
+import { ISettingManager, SETTING_INJECT_TOKEN as Setting_INJECT_TOKEN } from '../setting/SettingManager';
 import { ModuleContainer } from '../di/ModuleContainer';
 import { GetQueueType } from './Queue';
 import { QueueOptions, QueueSetting } from './QueueOptions';

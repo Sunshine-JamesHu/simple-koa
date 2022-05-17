@@ -26,16 +26,16 @@ export function InitSettingManager() {
       port: 30000,
     });
   }
-  Container.registerSingleton<ISettingManager>(INJECT_TOKEN, SettingManager); // 直接注入到容器中
+  Container.registerSingleton<ISettingManager>(SETTING_INJECT_TOKEN, SettingManager); // 直接注入到容器中
 }
 
-export const INJECT_TOKEN = 'ISettingManager';
+export const SETTING_INJECT_TOKEN = 'Sys:ISettingManager';
 
 export interface ISettingManager {
   GetConfig<TConfig = any>(key: string): TConfig | undefined;
 }
 
-@Singleton(INJECT_TOKEN)
+@Singleton(SETTING_INJECT_TOKEN)
 export class SettingManager implements ISettingManager {
   GetConfig<TConfig = any>(key: string): TConfig | undefined {
     const keyPath = key.split(':');

@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import { Container } from '../di/Dependency';
-import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
+import { ILogger, LOGGER_INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 
 export const CONTROLLER_METADATA = 'Metadata:Controller';
 

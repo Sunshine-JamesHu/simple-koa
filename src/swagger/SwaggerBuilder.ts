@@ -10,7 +10,7 @@ import { ModuleContainer } from '../di/ModuleContainer';
 import { GetActionInfo, GetHttpMethodStr } from '../router/Request';
 import { GetActionParamsMetadata } from '../router/RequestData';
 import { GetRouterInfo, GetRouterPath } from '../router/Router';
-import { ISettingManager, INJECT_TOKEN as SETTING_INJECT_TOKEN } from '../setting/SettingManager';
+import { ISettingManager, SETTING_INJECT_TOKEN as SETTING_INJECT_TOKEN } from '../setting/SettingManager';
 
 export const INJECT_TOKEN = 'ISwaggerBuilder';
 

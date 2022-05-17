@@ -2,8 +2,8 @@ import { createClient, RedisClientType, RedisFunctions, RedisModules, RedisScrip
 
 import { SimpleKoaError } from '../error/SimpleKoaError';
 import { Injectable, Singleton, Inject } from '../di/Dependency';
-import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from '../setting/SettingManager';
-import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
+import { ISettingManager, SETTING_INJECT_TOKEN as Setting_INJECT_TOKEN } from '../setting/SettingManager';
+import { ILogger, LOGGER_INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 import { RedisOptions } from './RedisOptions';
 import AsyncLock from 'async-lock';
 

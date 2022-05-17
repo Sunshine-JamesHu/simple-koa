@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import { Singleton } from '../..';
 import { Container, Inject, Injectable } from '../di/Dependency';
-import { ILogger, INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
+import { ILogger, LOGGER_INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 import { EventHandler, IEventHandler } from './EventHandler';
 
 export const INJECT_TOKEN = 'Sys:IEventBus';

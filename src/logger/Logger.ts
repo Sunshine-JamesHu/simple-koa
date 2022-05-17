@@ -1,8 +1,8 @@
 import log4js from 'log4js';
-import { ISettingManager, INJECT_TOKEN as Setting_INJECT_TOKEN } from '../../src/setting/SettingManager';
+import { ISettingManager, SETTING_INJECT_TOKEN as Setting_INJECT_TOKEN } from '../../src/setting/SettingManager';
 import { Singleton, Container } from '../../src/di/Dependency';
 
-export const INJECT_TOKEN = 'Sys:ILogger';
+export const LOGGER_INJECT_TOKEN = 'Sys:ILogger';
 
 declare type LoggerLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal';
 
@@ -14,7 +14,7 @@ export interface ILogger {
   LogFatal(message: string, ...args: any[]): void;
 }
 
-@Singleton(INJECT_TOKEN)
+@Singleton(LOGGER_INJECT_TOKEN)
 export class Logger implements ILogger {
   private readonly _loggers: { [key: string]: log4js.Logger } = {};
   constructor() {
@@ -86,7 +86,7 @@ export function InitLogger(options?: log4js.Configuration) {
     options = GetLogOptions();
   }
   log4js.configure(options);
-  Container.registerSingleton<ILogger>(INJECT_TOKEN, Logger); // 直接注入到容器中
+  Container.registerSingleton<ILogger>(LOGGER_INJECT_TOKEN, Logger); // 直接注入到容器中
 }
 
 function GetLogOptions(): log4js.Configuration {
