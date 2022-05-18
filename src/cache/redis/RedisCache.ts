@@ -1,10 +1,10 @@
 import { SimpleKoaError } from '../../error/SimpleKoaError';
 import { Inject, Injectable, Singleton } from '../../di/Dependency';
 import { IRedisClient, RedisSetOptions, REDIS_INJECT_TOKEN } from '../../redis/RedisClient';
-import { CacheBase, IDistributedCache, DISTRIBUTED_INJECT_TOKEN } from '../Cache';
+import { CacheBase, IDistributedCache, DISTRIBUTED_CACHE_INJECT_TOKEN } from '../Cache';
 import { ICacheEntryOptions } from '../CacheEntryOptions';
 
-@Singleton(DISTRIBUTED_INJECT_TOKEN)
+@Singleton(DISTRIBUTED_CACHE_INJECT_TOKEN)
 @Injectable()
 export class RedisCache extends CacheBase implements IDistributedCache {
   private readonly _redisClient: IRedisClient;
@@ -34,7 +34,7 @@ export class RedisCache extends CacheBase implements IDistributedCache {
   }
 
   async SetAsync<TCache = any>(key: string, data: TCache, options?: ICacheEntryOptions): Promise<void> {
-    if (!data) return;
+    if (data === null || data === undefined) return;
     let redisData: string | Buffer | null = null;
     if (Buffer.isBuffer(data)) redisData = data;
     else if (typeof data === 'string') redisData = data;
@@ -44,7 +44,7 @@ export class RedisCache extends CacheBase implements IDistributedCache {
       let opt: RedisSetOptions | undefined = undefined;
       if (options) {
         if (options.ttl) opt = { ttl: options.ttl };
-        if (options.sliding) this.AddSlidingCache(key, options.ttl);
+        if (options.sliding && options.ttl > 0) this.AddSlidingCache(key, options.ttl);
       }
       await this._redisClient.SetAsync(key, redisData, opt);
     }

@@ -3,13 +3,13 @@ import { Inject, Injectable, Transient } from '../../src/di/Dependency';
 import { HttpDelete, HttpGet, HttpPut, HttpPost } from '../../src/router/Request';
 import { RequestBody, RequestQuery } from '../../src/router/RequestData';
 import { Router } from '../../src/router/Router';
-import { DISTRIBUTED_INJECT_TOKEN, IDistributedCache, IMemoryCache, MEMORY_INJECT_TOKEN } from '../../src/cache/Cache';
+import { DISTRIBUTED_CACHE_INJECT_TOKEN, IDistributedCache, IMemoryCache, MEMORY_CACHE_INJECT_TOKEN } from '../../src/cache/Cache';
 
 @Transient()
 @Injectable()
 @Router({ desc: '缓存测试' })
 export default class CacheController extends Controller {
-  constructor(@Inject(MEMORY_INJECT_TOKEN) private memoryCache: IMemoryCache, @Inject(DISTRIBUTED_INJECT_TOKEN) private dCache: IDistributedCache) {
+  constructor(@Inject(MEMORY_CACHE_INJECT_TOKEN) private memoryCache: IMemoryCache, @Inject(DISTRIBUTED_CACHE_INJECT_TOKEN) private dCache: IDistributedCache) {
     super();
   }
 

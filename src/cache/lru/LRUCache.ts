@@ -1,11 +1,11 @@
 import LRUCacheDrive from 'lru-cache';
 
 import { Injectable, Singleton } from '../../di/Dependency';
-import { CacheBase, IMemoryCache, MEMORY_INJECT_TOKEN } from '../Cache';
+import { CacheBase, IMemoryCache, MEMORY_CACHE_INJECT_TOKEN } from '../Cache';
 import { ICacheEntryOptions } from '../CacheEntryOptions';
 import { LRUOptions } from './LRUOptions';
 
-@Singleton(MEMORY_INJECT_TOKEN)
+@Singleton(MEMORY_CACHE_INJECT_TOKEN)
 @Injectable()
 export class LRUCache extends CacheBase implements IMemoryCache {
   private readonly _cacheIns: LRUCacheDrive<string, any>;

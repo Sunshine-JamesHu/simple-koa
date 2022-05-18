@@ -108,8 +108,8 @@ export abstract class CacheBase implements ICache {
   }
 }
 
-export const MEMORY_INJECT_TOKEN = 'Sys:IMemoryCache';
+export const MEMORY_CACHE_INJECT_TOKEN = 'Sys:IMemoryCache';
 export interface IMemoryCache extends ICache {}
 
-export const DISTRIBUTED_INJECT_TOKEN = 'Sys:IDistributedCache';
+export const DISTRIBUTED_CACHE_INJECT_TOKEN = 'Sys:IDistributedCache';
 export interface IDistributedCache extends ICache {}

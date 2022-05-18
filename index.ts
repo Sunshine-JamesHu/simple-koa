@@ -22,7 +22,7 @@ import { SimpleKoaError } from './src/error/SimpleKoaError';
 import { UserFriendlyError } from './src/error/UserFriendlyError';
 import { IDatabaseClient } from './src/database/DatabaseClient';
 import { IHttpClient, HTTPCLIENT_INJECT_TOKEN } from './src/httpClient/HttpClient';
-import { DISTRIBUTED_INJECT_TOKEN, ICache, IDistributedCache, IMemoryCache, MEMORY_INJECT_TOKEN } from './src/cache/Cache';
+import { DISTRIBUTED_CACHE_INJECT_TOKEN, ICache, IDistributedCache, IMemoryCache, MEMORY_CACHE_INJECT_TOKEN } from './src/cache/Cache';
 
 export {
   Container,
@@ -77,9 +77,9 @@ export {
   IDatabaseClient,
   HTTPCLIENT_INJECT_TOKEN,
   IHttpClient,
-  MEMORY_INJECT_TOKEN,
+  MEMORY_CACHE_INJECT_TOKEN as MEMORY_INJECT_TOKEN,
   IMemoryCache,
-  DISTRIBUTED_INJECT_TOKEN,
+  DISTRIBUTED_CACHE_INJECT_TOKEN as DISTRIBUTED_INJECT_TOKEN,
   IDistributedCache,
   ICache,
 };

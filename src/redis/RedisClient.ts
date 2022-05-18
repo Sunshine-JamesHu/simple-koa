@@ -45,10 +45,16 @@ export class RedisClient implements IRedisClient {
   }
 
   async SetAsync(key: string | Buffer, data: string | Buffer, options?: RedisSetOptions): Promise<void> {
+    if (data === null || data === undefined) return;
+
     await this.ConnectAsync();
     await this._client.set(key, data);
     if (!options) options = this.GetDefaultSetOptions();
-    await this.PExpireAsync(key, options.ttl);
+
+    // 如果设置-1就不设置过期时间
+    if (options.ttl !== -1) {
+      await this.PExpireAsync(key, options.ttl);
+    }
   }
 
   async PExpireAsync(key: string | Buffer, ttl: number) {
