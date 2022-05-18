@@ -42,12 +42,12 @@ export class MqttPublisher extends Publisher {
 
   private async GetProducer(): Promise<mqtt.Client> {
     this.StartOrReBuildTimer();
-    if (this.producer) return this.producer;
+    if (this.producer && this.producer.connected) return this.producer;
     return await new Promise((resolve, reject) => {
       this._lock.acquire<mqtt.Client>(
         'get_mqtt_producer',
         async (done) => {
-          if (this.producer) {
+          if (this.producer && this.producer.connected) {
             done(undefined, this.producer);
           } else {
             try {

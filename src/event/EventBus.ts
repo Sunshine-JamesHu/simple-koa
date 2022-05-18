@@ -1,10 +1,10 @@
 import EventEmitter from 'events';
-import { Singleton } from '../..';
-import { Container, Inject, Injectable } from '../di/Dependency';
+import { SimpleKoaError } from '../error/SimpleKoaError';
+import { Container, Inject, Injectable, Singleton } from '../di/Dependency';
 import { ILogger, LOGGER_INJECT_TOKEN as Logger_INJECT_TOKEN } from '../logger/Logger';
 import { EventHandler, IEventHandler } from './EventHandler';
 
-export const INJECT_TOKEN = 'Sys:IEventBus';
+export const EVENT_BUS_INJECT_TOKEN = 'Sys:IEventBus';
 
 export interface IEventBus {
   /**
@@ -22,13 +22,20 @@ export interface IEventBus {
   Subscribe(key: string, handlerToken: string | Function): void;
 
   /**
+   * 监听事件
+   * @param key 事件Key
+   * @param handlerToken 处理器Token / 回调函数
+   */
+  SubscribeOnce(key: string, handlerToken: string | Function): void;
+
+  /**
    * 取消订阅
    * @param key 事件Key
    */
   UnSubscribe(key: string): void;
 }
 
-@Singleton(INJECT_TOKEN)
+@Singleton(EVENT_BUS_INJECT_TOKEN)
 @Injectable()
 export class EventBus extends EventEmitter implements IEventBus {
   protected readonly Logger: ILogger;
@@ -42,12 +49,23 @@ export class EventBus extends EventEmitter implements IEventBus {
   }
 
   Subscribe(key: string, handlerToken: string | Function): void {
-    this.on(key, (data) => {
+    this.EventSubscribe('on', key, handlerToken);
+  }
+
+  SubscribeOnce(key: string, handlerToken: string | Function): void {
+    this.EventSubscribe('once', key, handlerToken);
+  }
+
+  private EventSubscribe(funcName: 'on' | 'once', key: string, handlerToken: string | Function) {
+    this[funcName](key, async (data) => {
       try {
         const hanlder = Container.resolve<IEventHandler>(handlerToken as any);
-        if (hanlder instanceof EventHandler) hanlder.HandleEvent(data);
-        else throw new Error('handler must be EventHandler');
-      } catch (error: any) {
+        if (hanlder instanceof EventHandler) {
+          await hanlder.HandleEventAsync(data);
+        } else {
+          throw new SimpleKoaError('handler must be EventHandler');
+        }
+      } catch (error) {
         this.Logger.LogError('执行事件出错', error);
       }
     });

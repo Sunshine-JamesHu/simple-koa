@@ -1,8 +1,8 @@
 import { Transient, Singleton, Injectable, Inject, GetInjectInfo, Container, Scoped, ReplaceService, AllowMultiple } from './src/di/Dependency';
 import { ArrayHelper } from './src/core/ArrayHelper';
 import { ILogger, Logger, LOGGER_INJECT_TOKEN } from './src/logger/Logger';
-import { IEventBus, EventBus } from './src/event/EventBus';
-import { EventHandler, EventKey, IEventHandler, IEventData, GetEventKey } from './src/event/EventHandler';
+import { IEventBus, EventBus, EVENT_BUS_INJECT_TOKEN } from './src/event/EventBus';
+import { EventHandler, EventKey, IEventHandler, IEventData, GetEventKey, EVENT_HANDLER_INJECT_TOKEN } from './src/event/EventHandler';
 import { ISettingManager, SettingManager, SETTING_INJECT_TOKEN } from './src/setting/SettingManager';
 import { Router } from './src/router/Router';
 import { RequestBody, RequestQuery } from './src/router/RequestData';
@@ -34,13 +34,15 @@ export {
   GetInjectInfo,
   ReplaceService,
   AllowMultiple,
+  LOGGER_INJECT_TOKEN,
   ILogger,
   Logger,
-  LOGGER_INJECT_TOKEN,
+  EVENT_BUS_INJECT_TOKEN,
   IEventBus,
   EventBus,
   EventKey,
   IEventData,
+  EVENT_HANDLER_INJECT_TOKEN,
   IEventHandler,
   EventHandler,
   GetEventKey,

@@ -18,7 +18,7 @@
     "mqttTest": {
       "type": "mqtt",
       "options": {
-        "address": "mqtt://192.168.1.159",
+        "address": "mqtt://192.168.1.82",
         "clientId": "koa_mqtt_test",
         "userName": "ronds",
         "password": "ronds@123"

@@ -1,9 +1,9 @@
 import { AllowMultiple, Container } from '../di/Dependency';
 import { ModuleContainer } from '../di/ModuleContainer';
-import { IEventBus, INJECT_TOKEN as EventBus_INJECT_TOKEN } from './EventBus';
+import { IEventBus, EVENT_BUS_INJECT_TOKEN as EventBus_INJECT_TOKEN } from './EventBus';
 
-const METADATA_TOKEN = 'Sys:EventKey';
-export const INJECT_TOKEN = 'Sys:IEventHandler';
+const EVENT_KEY_METADATA = 'Metadata:EventKey';
+export const EVENT_HANDLER_INJECT_TOKEN = 'Sys:IEventHandler';
 
 export interface IEventData<TData = any> {
   ext: any;
@@ -11,26 +11,26 @@ export interface IEventData<TData = any> {
 }
 
 export interface IEventHandler<TData = any> {
-  HandleEvent(data: IEventData<TData>): void;
+  HandleEventAsync(data: IEventData<TData>): Promise<void>;
 }
 
 @AllowMultiple()
 export abstract class EventHandler<TData = any> implements IEventHandler<TData> {
-  abstract HandleEvent(data: IEventData<TData>): void;
+  abstract HandleEventAsync(data: IEventData<TData>): Promise<void>;
 }
 
 export function GetEventHandlerToken(key: string) {
-  return `${INJECT_TOKEN}_${key}`;
+  return `${EVENT_HANDLER_INJECT_TOKEN}_${key}`;
 }
 
 export function EventKey(key: string) {
   return (target: Function) => {
-    Reflect.defineMetadata(METADATA_TOKEN, key, target);
+    Reflect.defineMetadata(EVENT_KEY_METADATA, key, target);
   };
 }
 
 export function GetEventKey(target: Function): string {
-  return Reflect.getMetadata(METADATA_TOKEN, target);
+  return Reflect.getMetadata(EVENT_KEY_METADATA, target);
 }
 
 export function InitEventHandlers() {
