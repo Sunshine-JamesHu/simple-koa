@@ -8,22 +8,12 @@ import { IQueueTestService } from '../service/QueueTestService';
 import { AsyncDisposableTest, DisposableTest } from '../disposableTest/DisposableTest';
 import { UsingAsync } from '../../src/core/Disposable';
 import { UserFriendlyError } from '../../src/error/UserFriendlyError';
-
-export interface ITestController {
-  GetTest(data: { name: string }): string;
-  PostTest(id: string, data: Object): any;
-  PutTest(file: ArrayBuffer): string;
-  DeleteTest(id: number): string;
-
-  LoggerTest(): void;
-  GlobalErrorTest(): void;
-  QueuePubTest(data: any): Promise<void>;
-}
+import { SimpleKoaError } from '../../src/error/SimpleKoaError';
 
 @Transient()
 @Injectable()
 @Router({ desc: '测试路由' })
-export default class TestController extends Controller implements ITestController {
+export default class TestController extends Controller {
   constructor(@Inject('ITestService') private testService: ITestService, @Inject('IQueueTestService') private queueTestService: IQueueTestService) {
     super();
   }
@@ -46,6 +36,11 @@ export default class TestController extends Controller implements ITestControlle
   @HttpPost()
   GlobalErrorTest3(): void {
     throw new UserFriendlyError('主动抛出501错误', undefined, 501);
+  }
+
+  @HttpPost()
+  GlobalErrorTest4(): void {
+    throw new UserFriendlyError('错误，错误，错误');
   }
 
   @HttpGet()

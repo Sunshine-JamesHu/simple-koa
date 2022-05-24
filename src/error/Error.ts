@@ -18,8 +18,11 @@ export function InitGlobalError(app: Koa) {
     } catch (error: any) {
       if (error instanceof UserFriendlyError) {
         ctx.status = error.status ?? 403;
-
-        if (error.data) ctx.body = error.data;
+        let errorData = { msg: error.message };
+        if (error.data) {
+          errorData = { ...errorData, ...error.data };
+        }
+        ctx.body = errorData;
       } else {
         ctx.throw(500, error.message);
       }
