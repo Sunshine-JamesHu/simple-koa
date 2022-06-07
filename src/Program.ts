@@ -16,6 +16,7 @@ import { RegisterQueues, StartQueues, StopQueues } from './queue/QueueManager';
 import { Container } from './di/Dependency';
 import { InitEventHandlers } from './event/EventHandler';
 import { RegisterDbProviders } from './database/DatabaseProvider';
+import { StartCronJobs } from './cron/CronBuild';
 
 export default class Program {
   private readonly _app: Koa;
@@ -198,10 +199,15 @@ export default class Program {
    */
   protected OnPostApplicationInitialization() {
     this.StartQueues();
+    this.StartCronJobs();
   }
 
   protected StartQueues() {
     StartQueues();
+  }
+
+  protected StartCronJobs() {
+    StartCronJobs();
   }
 
   //#endregion

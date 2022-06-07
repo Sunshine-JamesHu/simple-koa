@@ -17,12 +17,14 @@ import { Database } from './src/database/Database';
 import { IQueueManager } from './src/queue/QueueManager';
 import { IQueueManagerFactory, INJECT_TOKEN as QMF_INJECT_TOKEN } from './src/queue/QueueManagerFactory';
 
-import Program from './src/Program'; // 注意：这一句必须放在最后面,否则打出来的包就会有问题
 import { SimpleKoaError } from './src/error/SimpleKoaError';
 import { UserFriendlyError } from './src/error/UserFriendlyError';
 import { IDatabaseClient } from './src/database/DatabaseClient';
 import { IHttpClient, HTTPCLIENT_INJECT_TOKEN } from './src/httpClient/HttpClient';
 import { DISTRIBUTED_CACHE_INJECT_TOKEN, ICache, IDistributedCache, IMemoryCache, MEMORY_CACHE_INJECT_TOKEN } from './src/cache/Cache';
+import { Cron, CronInfo, CronJob, CRON_JOB_INJECT_TOKEN, GetCronInfo, ICronJob } from './src/cron/Cron';
+
+import Program from './src/Program'; // 注意：这一句必须放在最后面,否则打出来的包就会有问题
 
 export {
   Container,
@@ -82,6 +84,12 @@ export {
   DISTRIBUTED_CACHE_INJECT_TOKEN as DISTRIBUTED_INJECT_TOKEN,
   IDistributedCache,
   ICache,
+  ICronJob,
+  CronJob,
+  CRON_JOB_INJECT_TOKEN,
+  CronInfo,
+  Cron,
+  GetCronInfo,
 };
 
 export default Program;
