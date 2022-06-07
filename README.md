@@ -20,6 +20,8 @@
 
 - Jwt 验证(日程中)
 
+- Cron定时任务
+
 - DatabaseProvider 数据库查询器 (支持`postgres`,`mysql`)
 
   - 支持连接池
@@ -28,8 +30,6 @@
   - 支持多库
   - 提供仓储支持 (日程中)
   - 提供轻量级 ORM (日程中)
-
-- 定时任务(日程中)
 
 #### 启动
 
@@ -384,3 +384,38 @@ export default class CacheController extends Controller {
 }
 
 ```
+
+#### 定时任务
+
+基于`Corn`实现，不支持`[?]`通配符号
+
+```
+import { Singleton } from '../../src/di/Dependency';
+import { Cron, CronInfo, CronJob, CRON_JOB_INJECT_TOKEN } from '../../src/cron/Cron';
+
+@Cron({ cron: '0/5 * * * * *' })
+@Singleton(CRON_JOB_INJECT_TOKEN)
+export class TestCronJob extends CronJob {
+  DoWorkAsync(): Promise<void> {
+    this.Logger.LogDebug('我是每5秒执行一次的任务');
+    return Promise.resolve();
+  }
+}
+
+@Singleton(CRON_JOB_INJECT_TOKEN)
+export class TestCronJob2 extends CronJob {
+  DoWorkAsync(): Promise<void> {
+    this.Logger.LogDebug('我是每10秒执行一次的任务');
+    return Promise.resolve();
+  }
+
+  protected GetCronInfo(): CronInfo | undefined {
+    return {
+      cron: '0/10 * * * * *',
+    };
+  }
+}
+
+```
+
+
