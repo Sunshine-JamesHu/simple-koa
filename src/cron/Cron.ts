@@ -57,12 +57,12 @@ export abstract class CronJob implements ICronJob {
   abstract DoWorkAsync(): Promise<void>;
 
   StartAsync(): Promise<void> {
-    if (this._job) this._job.start();
+    if (this.JobIns) this.JobIns.start();
     return Promise.resolve();
   }
 
   StopAsync(): Promise<void> {
-    if (this._job) this._job.stop();
+    if (this.JobIns) this.JobIns.stop();
     return Promise.resolve();
   }
 
