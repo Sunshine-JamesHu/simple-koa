@@ -44,14 +44,14 @@ export interface ICronJob extends IRunnable {
 
 @AllowMultiple()
 export abstract class CronJob implements ICronJob {
-  protected Logger: ILogger;
-  private readonly _job: cron.CronJob | undefined;
+  protected readonly Logger: ILogger;
+  protected readonly JobIns: cron.CronJob | undefined;
 
   constructor() {
     this.Logger = Container.resolve<ILogger>(LOGGER_INJECT_TOKEN);
 
     const cronInfo = this.GetCronInfo();
-    this._job = this.GenCronJob(cronInfo as any);
+    this.JobIns = this.GenCronJob(cronInfo as any);
   }
 
   abstract DoWorkAsync(): Promise<void>;
