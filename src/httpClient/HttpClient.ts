@@ -1,3 +1,6 @@
+import { Container } from '../di/Dependency';
+import { ILogger, LOGGER_INJECT_TOKEN } from '../logger/Logger';
+
 export const HTTPCLIENT_INJECT_TOKEN = 'Sys:IHttpClient';
 
 export interface HttpClientResult<TResult = any> {
@@ -47,6 +50,11 @@ export interface IHttpClient {
 }
 
 export abstract class HttpClientBase implements IHttpClient {
+  protected readonly Logger: ILogger;
+  constructor() {
+    this.Logger = Container.resolve<ILogger>(LOGGER_INJECT_TOKEN);
+  }
+
   Get<TResult = any>(config: RequestOptions): Promise<HttpClientResult<TResult>> {
     return this.Send<TResult>({ ...config, method: 'get' });
   }
