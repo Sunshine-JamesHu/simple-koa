@@ -67,7 +67,18 @@ export class ControllerBuilder implements IControllerBuilder {
           actionParams.forEach((element) => {
             let data: any = null;
             if (element.in === 'body') {
-              data = (ctx.request as any).body;
+              data = ctx.request.body;
+
+              // 处理FormData中带files的场景
+              if (ctx.request.files) {
+                if (!data) data = {};
+                for (const key in ctx.request.files) {
+                  if (Object.prototype.hasOwnProperty.call(ctx.request.files, key)) {
+                    const element = ctx.request.files[key];
+                    data[key] = element;
+                  }
+                }
+              }
             } else if (element.in === 'query') {
               const queryData = { ...ctx.params, ...ctx.query };
               data = queryData;

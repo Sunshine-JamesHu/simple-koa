@@ -3,7 +3,14 @@ import Program, { Container, GetEventKey, IQueueManagerFactory, QMF_INJECT_TOKEN
 import { KafkaSubTest } from './eventHandlers/KafkaSubTest';
 import { MqttSubTest } from './eventHandlers/MqttSubTest';
 
+import { UseOssProvider } from '../src/oss/OssProvider';
+
 class App extends Program {
+  override OnPreApplicationInitialization() {
+    super.OnPreApplicationInitialization();
+    UseOssProvider('local');
+  }
+
   override StartQueues() {
     const factory = Container.resolve<IQueueManagerFactory>(QMF_INJECT_TOKEN);
 
