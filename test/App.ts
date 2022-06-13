@@ -8,7 +8,8 @@ import { UseOssProvider } from '../src/oss/OssProvider';
 class App extends Program {
   override OnPreApplicationInitialization() {
     super.OnPreApplicationInitialization();
-    UseOssProvider('local');
+
+    UseOssProvider('minio');
   }
 
   override StartQueues() {

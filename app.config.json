@@ -56,5 +56,17 @@
   },
   "redis": {
     "url": "redis://192.168.1.82:6379/4"
+  },
+  "oss": {
+    "minio": {
+      "addr": "127.0.0.1",
+      "port": 9000,
+      "userName": "admin",
+      "password": "Rozh123srv",
+      "useSSL": false
+    },
+    "local": {
+      "dir": "oss_data"
+    }
   }
 }

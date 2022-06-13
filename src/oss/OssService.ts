@@ -5,7 +5,7 @@ export const OSS_SVC_INJECT_TOKEN = 'Sys:IOssService';
 
 export interface IOssService {
   GetAsync(path: string): Promise<Buffer>;
-  SaveAsync(data: Buffer, group?: string): Promise<string>;
+  SaveAsync(data: Buffer, fileName: string, group?: string): Promise<string>;
   RemoveAsync(path: string): Promise<void>;
 }
 
@@ -21,8 +21,8 @@ export class OssService implements IOssService {
     return this._ossProvider.GetAsync(path);
   }
 
-  SaveAsync(data: Buffer, group?: string | undefined): Promise<string> {
-    return this._ossProvider.SaveAsync(data, group);
+  SaveAsync(data: Buffer, fileName: string, group?: string | undefined): Promise<string> {
+    return this._ossProvider.SaveAsync(data, fileName, group);
   }
 
   RemoveAsync(path: string): Promise<void> {
