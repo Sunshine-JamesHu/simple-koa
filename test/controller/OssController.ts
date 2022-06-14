@@ -1,6 +1,6 @@
 import { Controller } from '../../src/controller/Controller';
 import { Inject, Injectable, Transient } from '../../src/di/Dependency';
-import { HttpGet, HttpPost } from '../../src/router/Request';
+import { HttpDelete, HttpGet, HttpPost } from '../../src/router/Request';
 import { RequestBody, RequestQuery } from '../../src/router/RequestData';
 import { Router } from '../../src/router/Router';
 import { IOssService, OSS_SVC_INJECT_TOKEN } from '../../src/oss/OssService';
@@ -30,12 +30,17 @@ export default class OssController extends Controller {
   }
 
   @HttpPost()
-  async UploadFile(@RequestBody() data: { name: string; data?: File }): Promise<string> {
+  async UploadFile(@RequestBody() data: { group: string | undefined; data?: File }): Promise<string> {
     if (data && data.data) {
       const reader = fs.createReadStream(data.data.path);
       const buffer = await StreamHelper.StreamToBuffer(reader);
-      return await this._ossService.SaveAsync(buffer, data.data.name || Guid.Create());
+      return await this._ossService.SaveAsync(buffer, data.data.name || Guid.Create(), data.group);
     }
     throw new UserFriendlyError('请选择一个文件进行上传');
+  }
+
+  @HttpDelete()
+  async DeleteFile(@RequestQuery('path') path: string): Promise<void> {
+    await this._ossService.RemoveAsync(path);
   }
 }

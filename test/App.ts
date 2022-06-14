@@ -9,7 +9,7 @@ class App extends Program {
   override OnPreApplicationInitialization() {
     super.OnPreApplicationInitialization();
 
-    UseOssProvider('minio');
+    UseOssProvider('local');
   }
 
   override StartQueues() {

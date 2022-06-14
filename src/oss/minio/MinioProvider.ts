@@ -44,9 +44,9 @@ export class MinioProvider extends OssProvider {
     }
   }
 
-  RemoveAsync(path: string): Promise<void> {
-    console.log(path);
-    throw new Error('Method not implemented.');
+  async RemoveAsync(path: string): Promise<void> {
+    const fileInfo = this.GetBucketNameAndFileName(path);
+    await this._client.removeObject(fileInfo.bucketName, fileInfo.fileName);
   }
 
   protected async CreateBucketAsync(name: string) {
@@ -59,14 +59,12 @@ export class MinioProvider extends OssProvider {
   }
 
   protected NewFileName(fileName: string) {
-    const index = fileName.lastIndexOf('.');
-    const f = fileName.substring(index);
-
+    const f = this.GetFileType(fileName);
     return `${Guid.Create()}${f}`;
   }
 
-  protected FullTag(eTag: string, bucketName?: string) {
-    return `${bucketName || this._defaultGroup}/${eTag}`;
+  protected FullTag(fileName: string, bucketName?: string) {
+    return `${bucketName || this._defaultGroup}/${fileName}`;
   }
 
   protected GetBucketNameAndFileName(path: string): MinioFileInfo {
