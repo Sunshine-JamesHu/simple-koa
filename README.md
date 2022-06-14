@@ -22,6 +22,8 @@
 
 - Cron定时任务
 
+- Oss存储支持(支持`local`,`minio`)
+
 - DatabaseProvider 数据库查询器 (支持`postgres`,`mysql`)
 
   - 支持连接池
@@ -418,4 +420,73 @@ export class TestCronJob2 extends CronJob {
 
 ```
 
+#### Oss存储支持
+Oss存储由 服务`IOssService`与提供者`IOssProvider`组成，框架中已经实现`minio`与`local`的Oss存储
 
+用法：
+首先注册通用的`IOssService`,其中`UseOssProvider`有两个参数，type为Oss提供者的key,options为Oss提供者的配置。如果options不指定的话，会从配置文件中的oss节点下拿一次
+
+**注册**
+```
+class App extends Program {
+  override OnPreApplicationInitialization() {
+    super.OnPreApplicationInitialization();
+
+    UseOssProvider('local'); // 可选项为 local,minio,自己实现的provider的唯一key
+  }
+}
+
+```
+**配置**
+
+```
+  "oss": {
+    "minio": {
+      "addr": "127.0.0.1",
+      "port": 9000,
+      "userName": "admin",
+      "password": "Admin@123456",
+      "useSSL": false
+    },
+    "local": {
+      "dir": "data"
+    }
+  }
+```
+
+**用法**
+```
+@Transient()
+@Injectable()
+@Router({ desc: 'Oss存储测试' })
+export default class OssController extends Controller {
+  constructor(@Inject(OSS_SVC_INJECT_TOKEN) private readonly _ossService: IOssService) {
+    super();
+  }
+
+  @HttpGet()
+  async GetFile(@RequestQuery('path') path: string): Promise<Buffer> {
+    const mimeType = lookup(path) || 'application/octet-stream';
+    this.Context.set('Content-Type', mimeType);
+    this.Context.set('Content-Disposition', `filename=${path.substring(path.indexOf('/') + 1)}`);
+    const res = await this._ossService.GetAsync(path);
+    return res;
+  }
+
+  @HttpPost()
+  async UploadFile(@RequestBody() data: { group: string | undefined; data?: File }): Promise<string> {
+    if (data && data.data) {
+      const reader = fs.createReadStream(data.data.path);
+      const buffer = await StreamHelper.StreamToBuffer(reader);
+      return await this._ossService.SaveAsync(buffer, data.data.name || Guid.Create(), data.group);
+    }
+    throw new UserFriendlyError('请选择一个文件进行上传');
+  }
+
+  @HttpDelete()
+  async DeleteFile(@RequestQuery('path') path: string): Promise<void> {
+    await this._ossService.RemoveAsync(path);
+  }
+}
+
+```

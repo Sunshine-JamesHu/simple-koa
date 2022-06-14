@@ -24,6 +24,10 @@ import { IHttpClient, HTTPCLIENT_INJECT_TOKEN } from './src/httpClient/HttpClien
 import { DISTRIBUTED_CACHE_INJECT_TOKEN, ICache, IDistributedCache, IMemoryCache, MEMORY_CACHE_INJECT_TOKEN } from './src/cache/Cache';
 import { Cron, CronInfo, CronJob, CRON_JOB_INJECT_TOKEN, GetCronInfo, ICronJob } from './src/cron/Cron';
 
+import { IOssService, OssService, OSS_SVC_INJECT_TOKEN } from './src/oss/OssService';
+import { GetProviderInjectToken, IOssProvider, OssProvider, OSS_PROVIDER_INJECT_TOKEN, UseOssProvider } from './src/oss/OssProvider';
+import { ConfigureOssOptions, GetInjectToken, OSS_OPTIONS_INJECT_TOKEN } from './src/oss/OssOptions';
+
 import Program from './src/Program'; // 注意：这一句必须放在最后面,否则打出来的包就会有问题
 
 export {
@@ -90,6 +94,17 @@ export {
   CronInfo,
   Cron,
   GetCronInfo,
+  IOssService,
+  OSS_SVC_INJECT_TOKEN,
+  OssService,
+  IOssProvider,
+  OSS_PROVIDER_INJECT_TOKEN,
+  OssProvider,
+  GetProviderInjectToken,
+  UseOssProvider,
+  OSS_OPTIONS_INJECT_TOKEN,
+  GetInjectToken as GetOssOptionsInjectToken,
+  ConfigureOssOptions,
 };
 
 export default Program;

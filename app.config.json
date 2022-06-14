@@ -62,11 +62,11 @@
       "addr": "127.0.0.1",
       "port": 9000,
       "userName": "admin",
-      "password": "123456",
+      "password": "Admin@123456",
       "useSSL": false
     },
     "local": {
-      "dir": "oss_data"
+      "dir": "data"
     }
   }
 }
