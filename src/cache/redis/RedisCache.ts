@@ -24,7 +24,12 @@ export class RedisCache extends CacheBase implements IDistributedCache {
         const ttl = this.GetSlidingTTL(key);
         if (ttl) await this._redisClient.PExpireAsync(key, ttl);
       }
-      return JSON.parse(json) as TCache;
+    
+      try {
+        return JSON.parse(json) as TCache;
+      } catch (error) {
+        return json as any;
+      }
     }
     return null as any;
   }

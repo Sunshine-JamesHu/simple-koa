@@ -55,7 +55,25 @@
     }
   },
   "redis": {
-    "url": "redis://192.168.1.82:6379/4"
+    "cluster": true,
+    "options": {
+      "rootNodes": [
+        {
+          "url": "redis://172.16.0.112:7000"
+        },
+        {
+          "url": "redis://172.16.0.112:7001",
+          "readonly": true
+        },
+        {
+          "url": "redis://172.16.0.112:7002",
+          "readonly": true
+        }
+      ],
+      "defaults": {
+        "password": "redis123"
+      }
+    }
   },
   "oss": {
     "minio": {

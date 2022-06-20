@@ -1,4 +1,13 @@
-import { createClient, RedisClientType, RedisFunctions, RedisModules, RedisScripts } from '@redis/client';
+import {
+  createClient,
+  createCluster,
+  RedisClientOptions,
+  RedisClientType,
+  RedisClusterOptions,
+  RedisFunctions,
+  RedisModules,
+  RedisScripts,
+} from '@redis/client';
 
 import { SimpleKoaError } from '../error/SimpleKoaError';
 import { Injectable, Singleton, Inject } from '../di/Dependency';
@@ -97,21 +106,45 @@ export class RedisClient implements IRedisClient {
     }
   }
 
-  private GetOptions() {
-    const setting = this._settingManager.GetConfig<RedisOptions>('redis');
+  protected GetOptions(): RedisOptions<any> {
+    const setting = this._settingManager.GetConfig<RedisOptions<any>>('redis');
     if (!setting) {
       throw new SimpleKoaError('Redis options is not null or empry');
     }
-    return setting as RedisOptions;
+    return setting;
   }
 
-  private CreateClient() {
-    const options = this.GetOptions();
-    const client = createClient({
-      url: options.url,
-    });
+  protected CreateClient() {
+    const redisOpt = this.GetOptions();
 
-    client.on('error', (error) => {
+    let client: any = undefined;
+    if (redisOpt.cluster) {
+      const options: RedisClusterOptions = redisOpt.options;
+      client = createCluster(options);
+      // const client2 = createCluster({
+      //   rootNodes: [
+      //     {
+      //       url: '172.16.0.112:7000',
+      //     },
+      //     {
+      //       url: '172.16.0.112:7001',
+      //       readonly: true,
+      //     },
+      //     {
+      //       url: '172.16.0.112:7002',
+      //       readonly: true,
+      //     },
+      //   ],
+      //   defaults: {
+      //     password: 'redis123',
+      //   },
+      // });
+    } else {
+      const options: RedisClientOptions = redisOpt.options;
+      client = createClient(options);
+    }
+
+    client.on('error', (error: any) => {
       throw new SimpleKoaError('Redis Client Error', error);
     });
 
@@ -135,7 +168,7 @@ export class RedisClient implements IRedisClient {
     return client;
   }
 
-  private GetDefaultSetOptions(): RedisSetOptions {
+  protected GetDefaultSetOptions(): RedisSetOptions {
     return { ttl: 1000 * 60 * 20 };
   }
 }
