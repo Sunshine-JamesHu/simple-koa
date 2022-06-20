@@ -386,8 +386,51 @@ export default class CacheController extends Controller {
 }
 
 ```
+#### Redis配置
 
-#### 定时任务
+Redis集群连接配置
+```
+  "redis": {
+    "cluster": true,
+    "options": {
+      "rootNodes": [
+        {
+          "url": "redis://172.16.0.112:7000"
+        },
+        {
+          "url": "redis://172.16.0.112:7001",
+          "readonly": true
+        },
+        {
+          "url": "redis://172.16.0.112:7002",
+          "readonly": true
+        }
+      ],
+      "defaults": {
+        "password": "redis123"
+      }
+    }
+  },
+```
+Redis单机版连接
+
+```
+  /**
+   * 连接字符串
+   * redis[s]://[[username][:password]@][host][:port][/db-number]
+   * ex:redis://alice:foobared@awesome.redis.server:6380
+   */
+
+  "redis": {
+    "cluster": true,
+    "options": {
+       "url": "redis://172.16.0.112:7000"
+    }
+  },
+```
+
+
+### 定时任务
 
 基于`Corn`实现，不支持`[?]`通配符号
 
