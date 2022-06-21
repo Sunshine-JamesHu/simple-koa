@@ -18,6 +18,11 @@ export default class TestController extends Controller {
     super();
   }
 
+  @HttpGet({ desc: '数组请求测试' })
+  ArrReqTest(@RequestQuery('id') id: number[]): void {
+    console.log(id);
+  }
+
   @HttpPost({ desc: '管道发布测试' })
   async QueuePubTest(@RequestBody() data: any): Promise<void> {
     this.queueTestService.PublishAsync(data);

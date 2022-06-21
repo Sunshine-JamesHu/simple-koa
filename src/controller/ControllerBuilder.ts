@@ -84,6 +84,11 @@ export class ControllerBuilder implements IControllerBuilder {
               data = queryData;
               if (element.key) {
                 data = queryData[element.key];
+
+                // 单独处理Array
+                if (element.type.name.toLowerCase() === 'array' && !Array.isArray(data)) {
+                  data = [data];
+                }
               }
             }
 

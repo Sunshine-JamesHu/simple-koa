@@ -24,7 +24,7 @@ interface SwaggerParameter {
   in: 'query' | 'body';
   required?: boolean;
   type: 'array' | 'string' | 'number' | 'object';
-  collectionFormat?: 'multi' | string;
+  collectionFormat?: 'multi' | 'ssv' | string;
 }
 
 interface SwaggerResponse {
@@ -148,6 +148,7 @@ export class SwaggerBuilder implements ISwaggerBuilder {
         const actionParams = GetActionParamsMetadata(property);
         if (actionParams) {
           actionParams.forEach((actionParam) => {
+            const actionParamType = actionParam.type.name.toLowerCase();
             if (actionParam.in === 'body') {
               parameters.push({
                 name: 'data',
@@ -163,7 +164,8 @@ export class SwaggerBuilder implements ISwaggerBuilder {
               parameters.push({
                 in: 'query',
                 name: key,
-                type: actionParam.type.name.toLowerCase(),
+                type: actionParamType,
+                collectionFormat: 'multi',
               });
             }
           });
