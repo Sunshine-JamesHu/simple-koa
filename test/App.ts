@@ -6,10 +6,13 @@ import { MqttSubTest } from './eventHandlers/MqttSubTest';
 import { UseOssProvider } from '../src/oss/OssProvider';
 
 class App extends Program {
-  override OnPreApplicationInitialization() {
+  protected override OnPreApplicationInitialization() {
     super.OnPreApplicationInitialization();
-
     UseOssProvider('local');
+  }
+
+  protected override OnApplicationInitialization(): void {
+    super.OnApplicationInitialization();
   }
 
   override StartQueues() {
@@ -24,7 +27,7 @@ class App extends Program {
     const kafkaTestTopic = GetEventKey(KafkaSubTest);
     kafkaManager.Subscription(kafkaTestTopic, kafkaTestTopic);
 
-    super.StartQueues();
+    // super.StartQueues();
   }
 }
 
