@@ -87,6 +87,7 @@ export class RedisClient implements IRedisClient {
             } else {
               try {
                 await this._client.connect();
+                this.clientReady = true;
                 done(undefined, null);
               } catch (error: any) {
                 done(error);
@@ -121,48 +122,31 @@ export class RedisClient implements IRedisClient {
     if (redisOpt.cluster) {
       const options: RedisClusterOptions = redisOpt.options;
       client = createCluster(options);
-      // const client2 = createCluster({
-      //   rootNodes: [
-      //     {
-      //       url: '172.16.0.112:7000',
-      //     },
-      //     {
-      //       url: '172.16.0.112:7001',
-      //       readonly: true,
-      //     },
-      //     {
-      //       url: '172.16.0.112:7002',
-      //       readonly: true,
-      //     },
-      //   ],
-      //   defaults: {
-      //     password: 'redis123',
-      //   },
-      // });
     } else {
       const options: RedisClientOptions = redisOpt.options;
       client = createClient(options);
+
+      // 这些玩意只能在单节点的Redis中进行注册
+      client.on('connect', () => {
+        this._logger.LogDebug('Redis Client Connect');
+      });
+
+      client.on('ready', () => {
+        this._logger.LogDebug('Redis Client Ready');
+        // this.clientReady = true;
+      });
+
+      client.on('reconnecting', () => {
+        this._logger.LogDebug('Redis Client ReConnecting');
+      });
+
+      client.on('end', () => {
+        this._logger.LogDebug('Redis Client Disconnect');
+      });
     }
 
     client.on('error', (error: any) => {
       throw new SimpleKoaError('Redis Client Error', error);
-    });
-
-    client.on('connect', () => {
-      this._logger.LogDebug('Redis Client Connect');
-    });
-
-    client.on('ready', () => {
-      this._logger.LogDebug('Redis Client Ready');
-      this.clientReady = true;
-    });
-
-    client.on('reconnecting', () => {
-      this._logger.LogDebug('Redis Client ReConnecting');
-    });
-
-    client.on('end', () => {
-      this._logger.LogDebug('Redis Client Disconnect');
     });
 
     return client;
